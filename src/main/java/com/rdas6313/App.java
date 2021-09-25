@@ -17,7 +17,11 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(Config.LOAD_MAIN_WINDOW));
+            Loadable loadDrawerWindow = new DrawerController();
+            Parent sidepane = loadDrawerWindow.loadFxml();
+            
+            Loadable loadableMainWindow = new MainWindowController(sidepane);
+            Parent root = loadableMainWindow.loadFxml();
             Scene scene = new Scene(root,Config.APP_WINDOW_WIDTH,Config.APP_WINDOW_HEIGHT);
             stage.setTitle(Config.APP_TITLE);
            

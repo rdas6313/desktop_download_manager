@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
-public class MainWindowController implements Initializable,Loadable{
+public class MainWindowController implements Initializable,Loadable,ClickNotifiable{
 
 
     @FXML
@@ -39,9 +39,13 @@ public class MainWindowController implements Initializable,Loadable{
 
     private AnchorPane sideDrawer;  
 
-    public MainWindowController(Parent parent) {
+    private Parent views[];
+
+    public MainWindowController(Parent parent, Parent[] sidebarViews) {
         sideDrawer = (AnchorPane)parent;
+        views = sidebarViews;
     }
+
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -50,7 +54,7 @@ public class MainWindowController implements Initializable,Loadable{
         sideDrawer.prefHeightProperty().bind(navDrawer.heightProperty());
         transition = new HamburgerBackArrowBasicTransition(hambargerBtn);
         transition.setRate(-1);
-       
+        changeWindowTitle(-1);
     }
 
     @FXML
@@ -70,6 +74,21 @@ public class MainWindowController implements Initializable,Loadable{
        return fxmlLoader.load();
     }
 
-    
+    @Override
+    public void onbuttonClick(int buttonId) {
+        paneWindow.getChildren().clear();
+        paneWindow.getChildren().add(views[buttonId]);
+        changeWindowTitle(buttonId);
+    }
+
+    private void changeWindowTitle(int buttonId){
+        switch(buttonId){
+            case Config.ADD_DOWNLOAD_BUTTON_ID:
+                windowTitle.setText(Config.ADD_DOWNLOAD_WINDOW_TITLE);
+                break;
+            default:
+                windowTitle.setText(Config.WELCOME_MSG);
+        }
+    }
     
 }

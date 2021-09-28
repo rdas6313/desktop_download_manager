@@ -11,7 +11,7 @@
    <children>
       <VBox prefHeight="250.0" prefWidth="46.0" AnchorPane.bottomAnchor="141.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <JFXButton fx:id="addDownloadBtn" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#onClickAddBtn" prefHeight="50.0" prefWidth="48.0" ripplerFill="#282828">
+            <JFXButton fx:id="addDownloadBtn" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="48.0" ripplerFill="#282828">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>

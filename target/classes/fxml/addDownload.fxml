@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="362.0" prefWidth="554.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox layoutX="110.0" layoutY="65.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="435.0">
+         <children>
+            <TextField fx:id="urlTextField" prefHeight="32.0" prefWidth="365.0" promptText="Url" HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="infoDownloadBtn" alignment="CENTER" buttonType="RAISED" cacheShape="false" centerShape="false" contentDisplay="GRAPHIC_ONLY" scaleShape="false" HBox.hgrow="ALWAYS">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/download.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <Circle fx:id="urlErrorIndicator" fill="#f80202" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets left="5.0" top="10.0" />
+               </HBox.margin>
+            </Circle>
+            <ProgressIndicator fx:id="progressIndicator" prefHeight="32.0" prefWidth="58.0" visible="false" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox layoutX="111.0" layoutY="117.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="403.0">
+         <children>
+            <TextField fx:id="fileChooserTextField" disable="true" prefHeight="32.0" promptText="Choose file" HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="fileChooserBtn" alignment="CENTER" buttonType="RAISED" cacheShape="false" centerShape="false" contentDisplay="GRAPHIC_ONLY" scaleShape="false" HBox.hgrow="ALWAYS">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons8-opened-folder-100.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <Circle fx:id="fileChooseErrorIndicator" fill="#f80202" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false">
+               <HBox.margin>
+                  <Insets left="5.0" top="10.0" />
+               </HBox.margin>
+            </Circle>
+         </children>
+      </HBox>
+      <TextField fx:id="fileNameTextField" layoutX="111.0" layoutY="168.0" prefHeight="32.0" prefWidth="346.0" promptText="File name" />
+      <Circle fx:id="filenameErrorIndicator" fill="#f80202" layoutX="508.0" layoutY="184.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+      <Label fx:id="sizeLabel" alignment="CENTER" layoutX="110.0" layoutY="229.0" prefHeight="18.0" prefWidth="346.0" text="Unknown size">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="downloadStartBtn" buttonType="RAISED" contentDisplay="CENTER" layoutX="110.0" layoutY="283.0" prefHeight="32.0" prefWidth="346.0" ripplerFill="WHITE" style="-fx-background-color: #1565c0;" text="DOWNLOAD" textAlignment="CENTER" textFill="WHITE" />
+      <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="107.0" layoutY="326.0" prefHeight="18.0" prefWidth="346.0" text="Label" textFill="RED" visible="false">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <padding>
+            <Insets top="12.0" />
+         </padding>
+      </Label>
+      <StackPane fx:id="stackPane" layoutX="112.0" layoutY="97.0" prefHeight="19.0" prefWidth="345.0" />
+   </children>
+</AnchorPane>

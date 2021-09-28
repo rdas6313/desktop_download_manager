@@ -7,12 +7,14 @@ import java.util.ResourceBundle;
 import com.jfoenix.controls.JFXButton;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 
-public class DrawerController implements Initializable,Loadable{
+public class DrawerController implements Initializable,Loadable,EventHandler<ActionEvent>{
+
 
     @FXML
     private JFXButton addDownloadBtn;
@@ -29,14 +31,32 @@ public class DrawerController implements Initializable,Loadable{
     @FXML
     private JFXButton settingsBtn;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {}
+    private ClickNotifiable clickNotifiable;
 
-    @FXML
-    private void onClickAddBtn(ActionEvent event) {
-        System.out.println("Its working");
+
+    public DrawerController(ClickNotifiable clickNotifiable) {
+        this.clickNotifiable = clickNotifiable;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        addDownloadBtn.setOnAction(this);
         
     }
+
+    @Override
+    public void handle(ActionEvent event) {
+       JFXButton button = (JFXButton)event.getSource();
+       switch(button.getId()){
+           case "addDownloadBtn":
+                clickNotifiable.onbuttonClick(Config.ADD_DOWNLOAD_BUTTON_ID);
+                break;
+        
+       }
+        
+    }
+
+
 
     @Override
     public Parent loadFxml() throws IOException {

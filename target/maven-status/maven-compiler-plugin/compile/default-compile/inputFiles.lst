@@ -1,7 +1,11 @@
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/Loadable.java
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/DrawerController.java
+/home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/DownloadEvent.java
+/home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/RunningDownloadController.java
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/Config.java
+/home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/DownloadListViewCell.java
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/ClickNotifiable.java
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/MainWindowController.java
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/App.java
 /home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/AddDownloadController.java
+/home/rdas6313/Documents/Sem Project/desktop_download_manager/src/main/java/com/rdas6313/DownloadInfo.java

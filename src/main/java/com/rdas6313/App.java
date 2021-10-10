@@ -1,6 +1,7 @@
 package com.rdas6313;
 
 import java.io.IOException;
+import java.lang.management.ThreadInfo;
 
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -11,24 +12,28 @@ import javafx.stage.Stage;
 /**
  * JavaFX App
  */
-public class App extends Application implements ClickNotifiable{
+public class App extends Application implements ClickNotifiable,DownloadEvent{
 
     private ClickNotifiable clickNotifiable;
     private Loadable loadableMainWindow;
     private Loadable loadDrawerWindow;
-    private Loadable loadAddDownloadWindow;
     private MainWindowController controller;
     private Parent sidebarViews[];
+
+    private Loadable loadNavBtnWindows[] = {
+        new AddDownloadController(this),
+        new RunningDownloadController()
+    };
 
     @Override
     public void start(Stage stage) {
         try {
             sidebarViews = new Parent[5];
-
-            loadAddDownloadWindow = new AddDownloadController();
-            sidebarViews[0] = loadAddDownloadWindow.loadFxml();
-
-            
+           
+            int i = 0;
+            for (Loadable loadable : loadNavBtnWindows) {
+                sidebarViews[i++] = loadable.loadFxml();
+            }
             
             loadDrawerWindow = new DrawerController(this);
             Parent sidepane = loadDrawerWindow.loadFxml();
@@ -55,6 +60,12 @@ public class App extends Application implements ClickNotifiable{
     @Override
     public void onbuttonClick(int buttonId) {
         clickNotifiable.onbuttonClick(buttonId);
+    }
+
+    @Override
+    public void onAdd(DownloadInfo info) {
+        DownloadEvent event = (DownloadEvent) loadNavBtnWindows[1];
+        event.onAdd(info);        
     }
 
     

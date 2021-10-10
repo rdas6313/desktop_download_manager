@@ -41,7 +41,7 @@ public class DrawerController implements Initializable,Loadable,EventHandler<Act
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addDownloadBtn.setOnAction(this);
-        
+        ongoingDownloadBtn.setOnAction(this);
     }
 
     @Override
@@ -50,6 +50,9 @@ public class DrawerController implements Initializable,Loadable,EventHandler<Act
        switch(button.getId()){
            case "addDownloadBtn":
                 clickNotifiable.onbuttonClick(Config.ADD_DOWNLOAD_BUTTON_ID);
+                break;
+            case "ongoingDownloadBtn":    
+                clickNotifiable.onbuttonClick(Config.RUNNING_DOWNLOAD_BUTTON_ID);
                 break;
         
        }

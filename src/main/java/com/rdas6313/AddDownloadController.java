@@ -76,6 +76,14 @@ public class AddDownloadController implements Initializable,Loadable,EventHandle
 
     private boolean isInfoAvailable;
     
+    private DownloadEvent downloadEvent;
+
+    
+
+    public AddDownloadController(DownloadEvent downloadEvent) {
+        this.downloadEvent = downloadEvent;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         infoDownloadBtn.setOnAction(this);
@@ -151,7 +159,7 @@ public class AddDownloadController implements Initializable,Loadable,EventHandle
         }
 
         //make download request and redirect to running download list page..
-        makeDownloadRequest();
+        makeDownloadRequest(url,filename,saveLocation);
 
     }
 
@@ -174,8 +182,13 @@ public class AddDownloadController implements Initializable,Loadable,EventHandle
         dialog.show();
     }
 
-    private void makeDownloadRequest() {
+    private void makeDownloadRequest(String url,String filename,String storageLocation) {
         //make download request and redirect to running download list page..
+        
+        int id = 0;
+        long size = 1024*1024;
+        DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size);
+        downloadEvent.onAdd(info);
         showDialog();
     }
 
@@ -225,7 +238,7 @@ public class AddDownloadController implements Initializable,Loadable,EventHandle
                     fileNameTextField.setText("Pal by arijit singh.mp3");
                     sizeLabel.setText("Size 5 MB");
                     isInfoAvailable = true;
-                
+                    
                 });
                 
             }

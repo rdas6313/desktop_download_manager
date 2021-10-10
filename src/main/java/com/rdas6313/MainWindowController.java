@@ -12,10 +12,14 @@ import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class MainWindowController implements Initializable,Loadable,ClickNotifiable{
 
@@ -30,7 +34,7 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
     private JFXDrawer navDrawer;
 
     @FXML
-    private Pane paneWindow;
+    private AnchorPane paneWindow;
 
     @FXML
     private Label testLabel;
@@ -39,7 +43,7 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
 
     private AnchorPane sideDrawer;  
 
-    private Parent views[];
+    private Node views[];
 
     public MainWindowController(Parent parent, Parent[] sidebarViews) {
         sideDrawer = (AnchorPane)parent;
@@ -55,6 +59,8 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
         transition = new HamburgerBackArrowBasicTransition(hambargerBtn);
         transition.setRate(-1);
         changeWindowTitle(-1);
+
+        
     }
 
     @FXML
@@ -76,8 +82,13 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
 
     @Override
     public void onbuttonClick(int buttonId) {
+        
         paneWindow.getChildren().clear();
         paneWindow.getChildren().add(views[buttonId]);
+        AnchorPane.setTopAnchor(views[buttonId], 0.0);
+        AnchorPane.setBottomAnchor(views[buttonId], 0.0);
+        AnchorPane.setLeftAnchor(views[buttonId], 0.0);
+        AnchorPane.setRightAnchor(views[buttonId], 0.0);      
         changeWindowTitle(buttonId);
     }
 
@@ -85,6 +96,9 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
         switch(buttonId){
             case Config.ADD_DOWNLOAD_BUTTON_ID:
                 windowTitle.setText(Config.ADD_DOWNLOAD_WINDOW_TITLE);
+                break;
+            case Config.RUNNING_DOWNLOAD_BUTTON_ID:
+                windowTitle.setText(Config.RUNNING_DOWNLOAD_WINDOW_TITLE);
                 break;
             default:
                 windowTitle.setText(Config.WELCOME_MSG);

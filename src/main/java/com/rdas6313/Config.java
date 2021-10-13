@@ -16,8 +16,8 @@ public class Config {
     public static final String LOAD_RUNNING_DOWNLOAD = "/fxml/runningDownload.fxml";
     public static final String LOAD_LIST_ITEM = "/fxml/listItem.fxml";
     //setting drawer buttons id
-    public static final int ADD_DOWNLOAD_BUTTON_ID = 0;
-    public static final int RUNNING_DOWNLOAD_BUTTON_ID = 1;
+    public static final String ADD_DOWNLOAD_BUTTON_ID = "addDownloadBtn";
+    public static final String RUNNING_DOWNLOAD_BUTTON_ID = "ongoingDownloadBtn";
     //setting error messages
     public static final String URL_ERROR_MSG = "Please enter a valid url";
     public static final String EMPTY_FILE_PATH_MSG = "Please choose a save location";

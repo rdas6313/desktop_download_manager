@@ -1,6 +1,5 @@
 package com.rdas6313;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -9,11 +8,9 @@ import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 
-public class DrawerController implements Initializable,Loadable,EventHandler<ActionEvent>{
+public class DrawerController extends Controller implements Initializable,EventHandler<ActionEvent>{
 
 
     @FXML
@@ -31,11 +28,11 @@ public class DrawerController implements Initializable,Loadable,EventHandler<Act
     @FXML
     private JFXButton settingsBtn;
 
-    private ClickNotifiable clickNotifiable;
 
 
-    public DrawerController(ClickNotifiable clickNotifiable) {
-        this.clickNotifiable = clickNotifiable;
+
+    public DrawerController() {
+        
     }
 
     @Override
@@ -47,25 +44,14 @@ public class DrawerController implements Initializable,Loadable,EventHandler<Act
     @Override
     public void handle(ActionEvent event) {
        JFXButton button = (JFXButton)event.getSource();
-       switch(button.getId()){
-           case "addDownloadBtn":
-                clickNotifiable.onbuttonClick(Config.ADD_DOWNLOAD_BUTTON_ID);
-                break;
-            case "ongoingDownloadBtn":    
-                clickNotifiable.onbuttonClick(Config.RUNNING_DOWNLOAD_BUTTON_ID);
-                break;
-        
-       }
-        
+       notifyObservers("SIDEBAR_BTN_CLICK", null, button.getId());
     }
 
-
+    
 
     @Override
-    public Parent loadFxml() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Config.LOAD_NAV_DRAWER));
-        fxmlLoader.setController(this);
-        return fxmlLoader.load();
+    protected String getFxmlPath() {
+        return Config.LOAD_NAV_DRAWER;
     }
     
 

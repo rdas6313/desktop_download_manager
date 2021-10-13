@@ -1,27 +1,20 @@
 package com.rdas6313;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
-public class MainWindowController implements Initializable,Loadable,ClickNotifiable{
+public class MainWindowController extends Controller implements Initializable{
 
 
     @FXML
@@ -45,9 +38,8 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
 
     private Node views[];
 
-    public MainWindowController(Parent parent, Parent[] sidebarViews) {
+    public MainWindowController(Parent parent) {
         sideDrawer = (AnchorPane)parent;
-        views = sidebarViews;
     }
 
 
@@ -57,10 +49,7 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
         sideDrawer.prefWidthProperty().bind(navDrawer.widthProperty());
         sideDrawer.prefHeightProperty().bind(navDrawer.heightProperty());
         transition = new HamburgerBackArrowBasicTransition(hambargerBtn);
-        transition.setRate(-1);
-        changeWindowTitle(-1);
-
-        
+        transition.setRate(-1);        
     }
 
     @FXML
@@ -73,36 +62,27 @@ public class MainWindowController implements Initializable,Loadable,ClickNotifia
             navDrawer.close();
     }
 
-    @Override
-    public Parent loadFxml() throws IOException{
-       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Config.LOAD_MAIN_WINDOW));
-       fxmlLoader.setController(this);
-       return fxmlLoader.load();
-    }
+    
 
     @Override
-    public void onbuttonClick(int buttonId) {
-        
+    protected String getFxmlPath() {
+        return Config.LOAD_MAIN_WINDOW;
+    }
+
+    public void setView(Parent view){
         paneWindow.getChildren().clear();
-        paneWindow.getChildren().add(views[buttonId]);
-        AnchorPane.setTopAnchor(views[buttonId], 0.0);
-        AnchorPane.setBottomAnchor(views[buttonId], 0.0);
-        AnchorPane.setLeftAnchor(views[buttonId], 0.0);
-        AnchorPane.setRightAnchor(views[buttonId], 0.0);      
-        changeWindowTitle(buttonId);
+        paneWindow.getChildren().add(view);
+        AnchorPane.setTopAnchor(view, 0.0);
+        AnchorPane.setBottomAnchor(view, 0.0);
+        AnchorPane.setLeftAnchor(view, 0.0);
+        AnchorPane.setRightAnchor(view, 0.0);      
+       
     }
 
-    private void changeWindowTitle(int buttonId){
-        switch(buttonId){
-            case Config.ADD_DOWNLOAD_BUTTON_ID:
-                windowTitle.setText(Config.ADD_DOWNLOAD_WINDOW_TITLE);
-                break;
-            case Config.RUNNING_DOWNLOAD_BUTTON_ID:
-                windowTitle.setText(Config.RUNNING_DOWNLOAD_WINDOW_TITLE);
-                break;
-            default:
-                windowTitle.setText(Config.WELCOME_MSG);
-        }
+    public void setWindowTitle(String title){
+        if(windowTitle == null)
+            return;
+        windowTitle.setText(title);
     }
     
 }

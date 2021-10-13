@@ -34,39 +34,13 @@ public class DownloadInfo {
 
     public void setCurrentSize(long currentSize) {
         this.currentSize = currentSize;
-        double currentProgress = calculateProgress();
+        double currentProgress = Helper.calculateProgress(currentSize, size);
         progress.set(currentProgress);
-        String text = calculateSizeInText(currentSize)+" / "+calculateSizeInText(size)+" ( "+ (int)(currentProgress*100)+"% )";
+        String text = Helper.formatTextForSizeAndProgress(currentSize, size, currentProgress);
         sizeAndProgressText.set(text);
     }
 
-    private String calculateSizeInText(long s) {
-        long n = s;
-		double ans = n;
-		int c = 0;
-		while(n > 1024 && c < 3){
-			ans = ans / 1024;
-			n = n / 1024;
-			c++;
-		}
-		String data;
-		switch(c){
-			case 0:
-				data = String.format("%.2f",ans) + " B";
-				break;
-			case 1:
-				data = String.format("%.2f",ans) + " KB";
-				break;
-			case 2:
-				data = String.format("%.2f",ans) + " MB";
-				break;
-			default:
-				data = String.format("%.2f",ans) + " GB";
-		}
-
-		return data;
-
-    }
+  
 
     public SimpleDoubleProperty getProgressProperty(){
         return progress;
@@ -74,12 +48,6 @@ public class DownloadInfo {
 
     public double getProgress(){
         return progress.get();
-    }
-
-    private double calculateProgress() {
-        double currentProgress = ((double)currentSize/size);
-        System.out.println("Progress "+currentProgress);
-        return currentProgress;
     }
 
     

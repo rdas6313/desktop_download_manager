@@ -23,7 +23,10 @@ public class DrawerController extends Controller implements Initializable,EventH
     private JFXButton pausedDownloadBtn;
 
     @FXML
-    private JFXButton pausedDownloadBtn1;
+    private JFXButton errorDownloadBtn;
+
+    @FXML
+    private JFXButton completedDownloadBtn;
 
     @FXML
     private JFXButton settingsBtn;
@@ -39,6 +42,10 @@ public class DrawerController extends Controller implements Initializable,EventH
     public void initialize(URL location, ResourceBundle resources) {
         addDownloadBtn.setOnAction(this);
         ongoingDownloadBtn.setOnAction(this);
+        pausedDownloadBtn.setOnAction(this);
+        errorDownloadBtn.setOnAction(this);
+        completedDownloadBtn.setOnAction(this);
+        settingsBtn.setOnAction(this);
     }
 
     @Override

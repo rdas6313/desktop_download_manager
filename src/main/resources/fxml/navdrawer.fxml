@@ -47,7 +47,7 @@
                   <Insets bottom="2.0" />
                </VBox.margin>
             </JFXButton>
-            <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="48.0" ripplerFill="#282828">
+            <JFXButton fx:id="errorDownloadBtn" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="48.0" ripplerFill="#282828">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -59,7 +59,7 @@
                   <Insets bottom="2.0" />
                </VBox.margin>
             </JFXButton>
-            <JFXButton fx:id="pausedDownloadBtn1" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="48.0" ripplerFill="#282828">
+            <JFXButton fx:id="completedDownloadBtn" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="48.0" ripplerFill="#282828">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>

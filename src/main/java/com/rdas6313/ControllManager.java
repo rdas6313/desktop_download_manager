@@ -1,5 +1,8 @@
 package com.rdas6313;
 
+import com.rdas6313.DataBase.PausedListHandler;
+import com.rdas6313.DataBase.SqlliteConnector;
+
 import javafx.scene.Parent;
 
 public class ControllManager extends Observable{
@@ -8,9 +11,12 @@ public class ControllManager extends Observable{
     
     private MainWindowController mController;
 
+    private PausedListHandler pausedListHandler = new PausedListHandler(new SqlliteConnector());
+
     private TitleController tControllers[] = {
         new AddDownloadController(),
-        new RunningDownloadController()
+        new RunningDownloadController(pausedListHandler),
+        new PausedDownloadController(pausedListHandler)
     };
 
     public ControllManager(){
@@ -30,6 +36,11 @@ public class ControllManager extends Observable{
         
         RunningDownloadController runningDownloadController = (RunningDownloadController) tControllers[1];
         attach(runningDownloadController);
+        pausedListHandler.attach((PausedDownloadController)tControllers[2]);
+        PausedDownloadController pausedDownloadController = (PausedDownloadController) tControllers[2];
+        pausedDownloadController.attach((event)->{
+            onAddDownload(event.getNewValue());
+        });
     }
 
     private void onAddDownload(Object newValue) {
@@ -39,6 +50,7 @@ public class ControllManager extends Observable{
     private void onClickNavDrawerBtn(Object newValue) {
         String btnId = (String) newValue;
         int value = -1;
+        
         switch(btnId){
             case Config.ADD_DOWNLOAD_BUTTON_ID:
                 value = 0;        
@@ -46,8 +58,11 @@ public class ControllManager extends Observable{
             case Config.RUNNING_DOWNLOAD_BUTTON_ID:
                 value = 1;
                 break;
+            case Config.PAUSED_DOWNLOAD_BUTTON_ID:
+                value = 2;
+                break;
         }
-        
+        System.out.println("Value "+value);
         mController.setView(tControllers[value].getRootView());
         mController.setWindowTitle(tControllers[value].getWindowTitle());
     }

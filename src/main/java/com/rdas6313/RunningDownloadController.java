@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import com.rdas6313.DataBase.DbHandler;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,12 +28,16 @@ public class RunningDownloadController extends TitleController implements Initia
     @FXML
     private ListView<DownloadInfo> listView;
 
-    private ObservableList<DownloadInfo> downloadInfoObservableList;
+    private ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
 
-    public RunningDownloadController() {
-        downloadInfoObservableList = FXCollections.observableArrayList();
+    private DbHandler dbHandler;
 
+    public RunningDownloadController(DbHandler dbHandler) {
+        this.dbHandler = dbHandler;
+        
     }
+
+    public RunningDownloadController() {}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,7 +48,7 @@ public class RunningDownloadController extends TitleController implements Initia
             @Override
             public ListCell<DownloadInfo> call(ListView<DownloadInfo> param) {
                 
-                return new DownloadListViewCell(RunningDownloadController.this);
+                return new RunningDownloadListCell(RunningDownloadController.this);
             }
             
         });
@@ -66,8 +72,12 @@ public class RunningDownloadController extends TitleController implements Initia
     @Override
     public void onbuttonClick(int index) {
       //Pause Button Clicked remove from Download list and save into database's paused list table
-      downloadInfoObservableList.remove(index);
-        
+        DownloadInfo data = downloadInfoObservableList.remove(index);
+        try {
+            dbHandler.insert(data);
+        } catch (NullPointerException e) {
+            System.err.println(getClass().getName()+" onbuttonClick : "+e.getMessage());
+        }
     }
 
     

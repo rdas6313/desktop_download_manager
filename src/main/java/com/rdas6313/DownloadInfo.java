@@ -24,6 +24,23 @@ public class DownloadInfo {
         this.progress = new SimpleDoubleProperty(0);
     }
 
+    public DownloadInfo(String url, String filename, String storageLocation, int id,long size,long currentSize) {
+        this.url = url;
+        this.filename = filename;
+        this.storageLocation = storageLocation;
+        this.id = id;
+        this.size = size;
+        this.currentSize = currentSize;
+        this.sizeAndProgressText = new SimpleStringProperty(
+            Helper.formatTextForSizeAndProgress(currentSize,size,
+                    Helper.calculateProgress(currentSize, size)
+            )
+        );
+        this.progress = new SimpleDoubleProperty(
+            Helper.calculateProgress(currentSize, size)
+        );
+    }
+
     public SimpleStringProperty getSizeAndProgressProperty(){
         return sizeAndProgressText;
     }

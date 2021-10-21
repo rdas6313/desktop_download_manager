@@ -11,12 +11,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
 import com.jfoenix.controls.JFXButton;
 
-public class DownloadListViewCell extends ListCell<DownloadInfo>{
-
-    
-    
-    
-    
+public class RunningDownloadListCell extends ListCell<DownloadInfo>{
     
     @FXML
     private Label filenameLabel;
@@ -37,7 +32,7 @@ public class DownloadListViewCell extends ListCell<DownloadInfo>{
     
     private ClickNotifiable clickNotifiable;
     
-    public DownloadListViewCell(ClickNotifiable clickNotifiable) {
+    public RunningDownloadListCell(ClickNotifiable clickNotifiable) {
         this.clickNotifiable = clickNotifiable;
     }
     
@@ -53,7 +48,7 @@ public class DownloadListViewCell extends ListCell<DownloadInfo>{
             
         } else {
             if (mLoader == null) {
-                mLoader = new FXMLLoader(getClass().getResource(Config.LOAD_LIST_ITEM));
+                mLoader = new FXMLLoader(getClass().getResource(Config.LOAD_RUNNING_LIST_ITEM));
                 mLoader.setController(this);
                 
                 try {

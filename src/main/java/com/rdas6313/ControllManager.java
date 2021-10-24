@@ -44,7 +44,7 @@ public class ControllManager extends Observable{
     }
 
     private void onAddDownload(Object newValue) {
-        notifyObservers("DOWNLOAD_ADD_TO_LIST", null, newValue);        
+        notifyObservers(Config.ITEM_ADDED_RUNNING_DOWNLOAD_NOTIFICATION, null, newValue);        
     }
 
     private void onClickNavDrawerBtn(Object newValue) {
@@ -61,8 +61,10 @@ public class ControllManager extends Observable{
             case Config.PAUSED_DOWNLOAD_BUTTON_ID:
                 value = 2;
                 break;
+            default:
+                return;
         }
-        System.out.println("Value "+value);
+        System.out.println("NavDrawerBtn value "+value);
         mController.setView(tControllers[value].getRootView());
         mController.setWindowTitle(tControllers[value].getWindowTitle());
     }

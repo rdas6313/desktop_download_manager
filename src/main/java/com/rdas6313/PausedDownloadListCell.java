@@ -29,12 +29,15 @@ public class PausedDownloadListCell extends ListCell<DownloadInfo>{
     
     @FXML
     private JFXButton playBtn;
+
+    @FXML
+    private JFXButton deleteBtn;
     
     private FXMLLoader mLoader;
     
-    private ClickNotifiable clickNotifiable;
+    private BtnEventNotifiable clickNotifiable;
     
-    public PausedDownloadListCell(ClickNotifiable clickNotifiable) {
+    public PausedDownloadListCell(BtnEventNotifiable clickNotifiable) {
         this.clickNotifiable = clickNotifiable;
     }
     
@@ -64,9 +67,13 @@ public class PausedDownloadListCell extends ListCell<DownloadInfo>{
             sizeLabel.textProperty().bind(item.getSizeAndProgressProperty());
             progressBar.progressProperty().bind(item.getProgressProperty());
             playBtn.setOnAction((ActionEvent event)->{
-                clickNotifiable.onbuttonClick(getIndex());
+                clickNotifiable.onBtnEventOccured(getIndex(),BtnEventType.RESUME_EVENT);
             });
             
+            deleteBtn.setOnAction((ActionEvent event)->{
+                clickNotifiable.onBtnEventOccured(getIndex(),BtnEventType.DELETE_EVENT);
+            });
+
             setText(null);
             setGraphic(anchorPane);
         }

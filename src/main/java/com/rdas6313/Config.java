@@ -38,6 +38,7 @@ public class Config {
     public static final String DOWNLOAD_INFO_EXCEPTION_MSG = "Download Info is null";
     //Notification messages
     public static final String ADD_DOWNLOAD_NOTIFICATION = "ADD_DOWNLOAD";
+    public static final String ITEM_ADDED_RUNNING_DOWNLOAD_NOTIFICATION = "item_add_to_running_download";
     
     
     

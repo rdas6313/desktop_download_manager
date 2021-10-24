@@ -20,7 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
-public class RunningDownloadController extends TitleController implements Initializable,ClickNotifiable,PropertyChangeListener{
+public class RunningDownloadController extends TitleController implements Initializable,BtnEventNotifiable,PropertyChangeListener{
 
     @FXML
     private AnchorPane rootView;
@@ -70,7 +70,10 @@ public class RunningDownloadController extends TitleController implements Initia
     
 
     @Override
-    public void onbuttonClick(int index) {
+    public void onBtnEventOccured(int index,BtnEventType eventType) {
+        if(eventType != BtnEventType.PAUSED_EVENT)
+            return;
+            
       //Pause Button Clicked remove from Download list and save into database's paused list table
         DownloadInfo data = downloadInfoObservableList.remove(index);
         try {

@@ -30,9 +30,9 @@ public class RunningDownloadListCell extends ListCell<DownloadInfo>{
     
     private FXMLLoader mLoader;
     
-    private ClickNotifiable clickNotifiable;
+    private BtnEventNotifiable clickNotifiable;
     
-    public RunningDownloadListCell(ClickNotifiable clickNotifiable) {
+    public RunningDownloadListCell(BtnEventNotifiable clickNotifiable) {
         this.clickNotifiable = clickNotifiable;
     }
     
@@ -63,7 +63,7 @@ public class RunningDownloadListCell extends ListCell<DownloadInfo>{
             sizeLabel.textProperty().bind(item.getSizeAndProgressProperty());
             progressBar.progressProperty().bind(item.getProgressProperty());
             pauseBtn.setOnAction((ActionEvent event)->{
-                clickNotifiable.onbuttonClick(getIndex());
+                clickNotifiable.onBtnEventOccured(getIndex(),BtnEventType.PAUSED_EVENT);
             });
             
             setText(null);

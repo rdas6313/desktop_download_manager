@@ -16,7 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
-public class PausedDownloadController extends TitleController implements ClickNotifiable,Initializable,PropertyChangeListener{
+public class PausedDownloadController extends TitleController implements BtnEventNotifiable,Initializable,PropertyChangeListener{
     
     
     @FXML
@@ -53,7 +53,30 @@ public class PausedDownloadController extends TitleController implements ClickNo
 
     
     @Override
-    public void onbuttonClick(int index) {
+    public void onBtnEventOccured(int index,BtnEventType eventType) {
+        switch(eventType){
+            case RESUME_EVENT:
+                onResume(index);
+                break;
+            case DELETE_EVENT:
+                onDelete(index);    
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    private void onDelete(int index) {
+        try {
+            DownloadInfo data = (DownloadInfo) downloadInfoObservableList.remove(index);
+            dbHandler.delete(data.getId());
+        } catch (Exception e) {
+            System.err.println(getClass().getName()+" onButtonClick :"+e.getMessage());
+        }
+    }
+
+    private void onResume(int index) {
         try {
             DownloadInfo data = (DownloadInfo) downloadInfoObservableList.remove(index);
             dbHandler.delete(data.getId());
@@ -83,6 +106,9 @@ public class PausedDownloadController extends TitleController implements ClickNo
         switch(evt.getPropertyName()){
             case Config.INSERTION_SUCCESS_NOTIFICATION:
                 downloadInfoObservableList.add((DownloadInfo)evt.getNewValue());
+                break;
+            case Config.DELETION_ERROR_NOTIFICATION:
+                System.out.println("Unable to delete"); //Todo: show dialog here.
                 break;
         }
         

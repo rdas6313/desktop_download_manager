@@ -254,7 +254,7 @@ public class AddDownloadController extends TitleController implements Initializa
                 Platform.runLater(() -> {
                     progressIndicator.setVisible(false);
                     fileNameTextField.setText("Pal by arijit singh.mp3");
-                    sizeLabel.setText("Size 5 MB");
+                    sizeLabel.setText("Size 1024 KB");
                     isInfoAvailable = true;
                     
                 });

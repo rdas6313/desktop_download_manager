@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ public class SqlliteConnector implements DbConnector{
     }
 
     @Override
-    public boolean delete(String tableName, String condition, String conditionValue) {
+    public int delete(String tableName, String condition, String conditionValue) {
         StringBuilder sql = new StringBuilder("DELETE FROM ");
         sql.append(tableName)
             .append(" WHERE ")
@@ -32,7 +33,7 @@ public class SqlliteConnector implements DbConnector{
             .append(" = ")
             .append(conditionValue)
             .append(";");
-        return rawExecute(sql.toString());
+        return execute(sql.toString());
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SqlliteConnector implements DbConnector{
 
 
     @Override
-    public boolean insert(HashMap<String,String>data, String tableName) {
+    public int insert(HashMap<String,String>data, String tableName) {
  
         StringBuilder sqlQuery = new StringBuilder("INSERT INTO ");
         sqlQuery.append(tableName)
@@ -67,8 +68,24 @@ public class SqlliteConnector implements DbConnector{
         
         System.out.println(" QUERY String "+sqlQuery.toString());
         
-        return rawExecute(sqlQuery.toString());
+        return execute(sqlQuery.toString());
              
+    }
+
+    private int execute(String sql){
+        try {
+            Connection connection = connect(DATA_BASE_LOCATION);
+            PreparedStatement statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            int affectedRow = statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            if(affectedRow > 0)
+                return Integer.valueOf(rs.getString(1));
+            else
+                throw new SQLException("Execution Error happened while insertion or deletion");
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+            return -1;
+        }
     }
 
     @Override

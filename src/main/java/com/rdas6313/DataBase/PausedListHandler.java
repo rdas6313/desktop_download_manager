@@ -20,9 +20,11 @@ public class PausedListHandler extends Observable implements DbHandler{
 
     @Override
     public void delete(int key_id) {
-        boolean isDeleted = dbConnector.delete(TABLE_NAME, Config.KEY_ID_COLUMN, String.valueOf(key_id));
-        if(isDeleted)
+        int key = dbConnector.delete(TABLE_NAME, Config.KEY_ID_COLUMN, String.valueOf(key_id));
+        if(key != -1){
             notifyObservers(Config.DELETION_SUCCESS_NOTIFICATION, null, null);
+            System.out.println(getClass().getName()+" delete: data with key"+ key_id+ "deleted");
+        }
         else
             notifyObservers(Config.DELETION_ERROR_NOTIFICATION, null, null);
     }
@@ -55,12 +57,27 @@ public class PausedListHandler extends Observable implements DbHandler{
         datalist.put(Config.FILE_SIZE_COLUMN,String.valueOf(data.getSize()));
         datalist.put(Config.DOWNLOADED_SIZE_COLUMN,String.valueOf(data.getCurrentSize()));
        
-        boolean isInserted = dbConnector.insert(datalist, TABLE_NAME);
+        int key = dbConnector.insert(datalist, TABLE_NAME);
        
-        if(!isInserted)
+        if(key == -1)
             notifyObservers(Config.INSERTION_ERROR_NOTIFICATION, null, data);
-        else 
+        else{
+            data = insertKeyToData(data,key);             
             notifyObservers(Config.INSERTION_SUCCESS_NOTIFICATION, null, data);
+            System.out.println(getClass().getName()+" Insert: "+data.getFilename()+" Inserted");
+        }
+    }
+
+    private DownloadInfo insertKeyToData(DownloadInfo data,int key) {
+       DownloadInfo info = new DownloadInfo(
+           data.getUrl(),
+           data.getFilename(),
+           data.getStorageLocation(),
+           key,
+           data.getSize(),
+           data.getCurrentSize()
+       );
+       return info;
     }
     
 }

@@ -9,8 +9,8 @@ public interface DbConnector {
    
     List<JSONObject> read(String tableName);
     List<JSONObject> readRaw(String sqlQuery);
-    boolean insert(HashMap<String,String>data,String tableName);
-    boolean delete(String tableName,String condition,String conditionValue);
+    int insert(HashMap<String,String>data,String tableName);
+    int delete(String tableName,String condition,String conditionValue);
     boolean delete(String tableName);
     boolean rawExecute(String sqlQuery);
 

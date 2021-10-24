@@ -14,18 +14,20 @@ import org.junit.jupiter.api.Assertions;
 public class SqlliteConnectorTest {
     private final String table = Config.PAUSED_TABLE_NAME;
     private DbConnector connector = (DbConnector) new SqlliteConnector();
+    
     @Test
     public void insertTest(){
     
-        DownloadInfo data = new DownloadInfo("http://", "vigi vagi.mp3", "file://", 1, 42000,2000);
+        DownloadInfo data = new DownloadInfo("http://", "Test3 .mp3", "file://", 1, 42000,2000);
         HashMap<String,String> datalist = new HashMap<>();
         datalist.put(Config.FILE_NAME_COLUMN,data.getFilename());
         datalist.put(Config.URL_COLUMN,data.getUrl());
         datalist.put(Config.SAVED_LOCATION_COLUMN,data.getStorageLocation());
         datalist.put(Config.FILE_SIZE_COLUMN,String.valueOf(data.getSize()));
         datalist.put(Config.DOWNLOADED_SIZE_COLUMN,String.valueOf(data.getCurrentSize()));
-        boolean isInserted = connector.insert(datalist, table);
-        Assertions.assertTrue(isInserted);
+        int id = connector.insert(datalist, table);
+        System.out.println(getClass().getName()+" insertTest: "+id);
+        Assertions.assertNotEquals(-1, id);
 
     }
 
@@ -48,7 +50,7 @@ public class SqlliteConnectorTest {
         SqlliteConnector sqlliteConnector = (SqlliteConnector) connector;
         String sqlQuery = "select * from "+Config.PAUSED_TABLE_NAME;
         List<JSONObject> list = sqlliteConnector.readRaw(sqlQuery);
-        Assertions.assertEquals(5, list.size());
+        Assertions.assertEquals(3, list.size());
         for(int i = 0;i < list.size();i++){
             JSONObject object = list.get(i);
             System.out.println(object.toString());

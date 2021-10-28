@@ -207,7 +207,7 @@ public class AddDownloadController extends TitleController implements Initializa
         //make download request and redirect to running download list page..
         
         int id = 0;
-        long size = 1024*1024;
+        long size = 2048;
         DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size);
         notifyObservers("ADD_DOWNLOAD", null, info);
         showDialog();
@@ -254,7 +254,7 @@ public class AddDownloadController extends TitleController implements Initializa
                 Platform.runLater(() -> {
                     progressIndicator.setVisible(false);
                     fileNameTextField.setText("Pal by arijit singh.mp3");
-                    sizeLabel.setText("Size 1024 KB");
+                    sizeLabel.setText("Size 2 KB");
                     isInfoAvailable = true;
                     
                 });

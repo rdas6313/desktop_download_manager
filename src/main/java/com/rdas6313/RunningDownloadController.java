@@ -2,9 +2,7 @@ package com.rdas6313;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import com.rdas6313.DataBase.DbHandler;
@@ -30,9 +28,9 @@ public class RunningDownloadController extends TitleController implements Initia
 
     private ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
 
-    private DbHandler dbHandler;
+    private DbHandler[] dbHandler;
 
-    public RunningDownloadController(DbHandler dbHandler) {
+    public RunningDownloadController(DbHandler[] dbHandler) {
         this.dbHandler = dbHandler;
         
     }
@@ -77,7 +75,7 @@ public class RunningDownloadController extends TitleController implements Initia
       //Pause Button Clicked remove from Download list and save into database's paused list table
         DownloadInfo data = downloadInfoObservableList.remove(index);
         try {
-            dbHandler.insert(data);
+            dbHandler[0].insert(data);
         } catch (NullPointerException e) {
             System.err.println(getClass().getName()+" onbuttonClick : "+e.getMessage());
         }
@@ -101,42 +99,69 @@ public class RunningDownloadController extends TitleController implements Initia
         
     }
 
+    private void insertIntoDb(DownloadInfo info) {
+        
+
+        Platform.runLater(new Runnable(){
+
+            @Override
+            public void run() {
+                try {
+                    downloadInfoObservableList.remove(info);
+                    dbHandler[1].insert(info);
+                    
+                } catch (Exception e) {
+                    System.err.println(getClass().getName()+" insertIntoDb : "+e.getMessage());
+                }                 
+            }
+        });
+    }
    
     
     private void testSet(){
         //downloadInfoObservableList.add(new DownloadInfo("awe", "Tum hi ho.mp3", " ", 1, 1024*1024));
+
         Thread thread = new Thread(new Runnable(){
 
             @Override
             public void run() {
-                for(int i=0;i<1024;i++){
+               int downloadedData = 512;
+               int i = 0;
+                while(downloadInfoObservableList.size() > 0){
+                    DownloadInfo info = downloadInfoObservableList.get(i);
                     
-                    for(int j=0;j<downloadInfoObservableList.size();j++){
-                        DownloadInfo info = downloadInfoObservableList.get(j);
-                        Platform.runLater(new Runnable(){
-
-                            @Override
-                            public void run() {
-                                info.setCurrentSize(info.getCurrentSize()+1024);                            
-                            }
-                            
-                        });
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                    if(info.getCurrentSize() < info.getSize()){
+                        increaseSize(info, downloadedData);
+                    }else{
+                        insertIntoDb(info);
                     }
-                }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(downloadInfoObservableList.size() > 0)
+                        i = ((i+1)%downloadInfoObservableList.size());
+               }
                 
             }
             
         });
+
         thread.start();
+
     }
 
-        
+    private void increaseSize(DownloadInfo info,int downloadedData){
+        Platform.runLater(new Runnable(){
+
+            @Override
+            public void run() {
+                info.setCurrentSize(info.getCurrentSize()+downloadedData);         
+            }
+        });
+    }  
     
     
 }

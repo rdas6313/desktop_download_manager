@@ -4,9 +4,10 @@ public class Config {
     //Setting titles here
     public static final String APP_TITLE = "Download Manager";
     public static final String ADD_DOWNLOAD_WINDOW_TITLE = "Add Download";
-    public static final String RUNNING_DOWNLOAD_WINDOW_TITLE = "Running Download";
+    public static final String RUNNING_DOWNLOAD_WINDOW_TITLE = "Running Downloads";
     public static final String WELCOME_MSG = "Welcome";
-    public static final String PAUSED_DOWNLOAD_TITLE = "Paused Download";
+    public static final String PAUSED_DOWNLOAD_TITLE = "Paused Downloads";
+    public static final String COMPLETED_DOWNLOAD_WINDOW_TITLE = "Completed Downloads";
     //Setting Scene window here
     public static final int APP_WINDOW_WIDTH = 700;
     public static final int APP_WINDOW_HEIGHT = 450;
@@ -18,6 +19,9 @@ public class Config {
     public static final String LOAD_RUNNING_LIST_ITEM = "/fxml/runningListItem.fxml";
     public static final String LOAD_PAUSED_DOWNLOAD = "/fxml/pausedDownload.fxml";
     public static final String LOAD_PAUSED_LIST_ITEM = "/fxml/pausedListItem.fxml";
+    public static final String LOAD_COMPLETED_DOWNLOAD = "/fxml/completedDownload.fxml";
+    public static final String LOAD_COMPLETED_LIST_ITEM = "/fxml/completedListItem.fxml";
+    
     //setting drawer buttons id
     public static final String ADD_DOWNLOAD_BUTTON_ID = "addDownloadBtn";
     public static final String RUNNING_DOWNLOAD_BUTTON_ID = "ongoingDownloadBtn";
@@ -39,7 +43,8 @@ public class Config {
     //Notification messages
     public static final String ADD_DOWNLOAD_NOTIFICATION = "ADD_DOWNLOAD";
     public static final String ITEM_ADDED_RUNNING_DOWNLOAD_NOTIFICATION = "item_add_to_running_download";
-    
+   
+   
     
     
     

@@ -1,5 +1,8 @@
 package com.rdas6313;
 
+import com.rdas6313.DataBase.CompletedListHandler;
+import com.rdas6313.DataBase.DbConnector;
+import com.rdas6313.DataBase.DbHandler;
 import com.rdas6313.DataBase.PausedListHandler;
 import com.rdas6313.DataBase.SqlliteConnector;
 
@@ -11,12 +14,18 @@ public class ControllManager extends Observable{
     
     private MainWindowController mController;
 
-    private PausedListHandler pausedListHandler = new PausedListHandler(new SqlliteConnector());
+    private DbConnector dbConnector = new SqlliteConnector();
+
+    private DbHandler dbHandlers[] = {
+        new PausedListHandler(dbConnector),
+        new CompletedListHandler(dbConnector)
+    };
 
     private TitleController tControllers[] = {
         new AddDownloadController(),
-        new RunningDownloadController(pausedListHandler),
-        new PausedDownloadController(pausedListHandler)
+        new RunningDownloadController(dbHandlers),
+        new PausedDownloadController(dbHandlers[0]),
+        new CompletedDownloadController(dbHandlers[1])
     };
 
     public ControllManager(){
@@ -36,11 +45,14 @@ public class ControllManager extends Observable{
         
         RunningDownloadController runningDownloadController = (RunningDownloadController) tControllers[1];
         attach(runningDownloadController);
-        pausedListHandler.attach((PausedDownloadController)tControllers[2]);
+        ((PausedListHandler)dbHandlers[0]).attach((PausedDownloadController)tControllers[2]);
         PausedDownloadController pausedDownloadController = (PausedDownloadController) tControllers[2];
         pausedDownloadController.attach((event)->{
             onAddDownload(event.getNewValue());
         });
+
+        ((CompletedListHandler)dbHandlers[1]).attach((CompletedDownloadController)tControllers[3]);
+    
     }
 
     private void onAddDownload(Object newValue) {
@@ -60,6 +72,9 @@ public class ControllManager extends Observable{
                 break;
             case Config.PAUSED_DOWNLOAD_BUTTON_ID:
                 value = 2;
+                break;
+            case Config.COMPLETED_DOWNLOAD_BUTTON_ID:
+                value = 3;
                 break;
             default:
                 return;

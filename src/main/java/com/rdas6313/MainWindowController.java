@@ -9,7 +9,6 @@ import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -36,7 +35,7 @@ public class MainWindowController extends Controller implements Initializable{
 
     private AnchorPane sideDrawer;  
 
-    private Node views[];
+    
 
     public MainWindowController(Parent parent) {
         sideDrawer = (AnchorPane)parent;

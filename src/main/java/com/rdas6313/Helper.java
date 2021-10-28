@@ -12,7 +12,7 @@ public class Helper {
       return calculateSizeInText(currentSize)+" / "+calculateSizeInText(totalSize)+" ( "+ (int)(currentProgress*100)+"% )";
     }
 
-    private static String calculateSizeInText(long s) {
+    public static String calculateSizeInText(long s) {
         long n = s;
 		double ans = n;
 		int c = 0;

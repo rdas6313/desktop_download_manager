@@ -55,7 +55,7 @@ public class ControllManager extends Observable{
         });
 
         ((CompletedListHandler)dbHandlers[1]).attach((CompletedDownloadController)tControllers[3]);
-        
+        downloadConnector.attach((RunningDownloadController) tControllers[1]);
        
     }
 
@@ -75,7 +75,6 @@ public class ControllManager extends Observable{
                 break;
             case Config.RUNNING_DOWNLOAD_BUTTON_ID:
                 dettachAllApiConnector();
-                downloadConnector.attach((RunningDownloadController) tControllers[1]);
                 value = 1;
                 break;
             case Config.PAUSED_DOWNLOAD_BUTTON_ID:
@@ -105,7 +104,7 @@ public class ControllManager extends Observable{
             System.out.println(getClass().getSimpleName()+" dettachAllApiConnector: download connector null");
             return;
         }
-        downloadConnector.detach((RunningDownloadController) tControllers[1]);  
+        
         downloadConnector.detach((AddDownloadController) tControllers[0]);
         downloadConnector.detach((PausedDownloadController) tControllers[2]);
     }

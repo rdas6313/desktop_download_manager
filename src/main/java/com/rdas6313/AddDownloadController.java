@@ -1,16 +1,20 @@
 package com.rdas6313;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.rdas6313.ApiConnection.DataCodes;
+import com.rdas6313.ApiConnection.Request;
+import com.rdas6313.ApiConnection.ResponseCodes;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.json.simple.JSONObject;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,7 +33,7 @@ import javafx.stage.Stage;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 
-public class AddDownloadController extends TitleController implements Initializable,EventHandler<ActionEvent>,ChangeListener<String>{
+public class AddDownloadController extends TitleController implements Initializable,EventHandler<ActionEvent>,ChangeListener<String>,PropertyChangeListener{
     
 
     @FXML
@@ -65,18 +69,23 @@ public class AddDownloadController extends TitleController implements Initializa
     @FXML
     private Label errorLabel;
 
+    
     @FXML
     private ProgressIndicator progressIndicator;
-
+    
     @FXML
     private StackPane stackPane;
-
+    
     private boolean isInfoAvailable;
-
+    
     private UrlValidator validator;
     
-
+    private Request downloadRequest;
     
+    public AddDownloadController(Request downloadRequest) {
+        this.downloadRequest = downloadRequest;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         infoDownloadBtn.setOnAction(this);
@@ -87,8 +96,6 @@ public class AddDownloadController extends TitleController implements Initializa
         urlTextField.textProperty().addListener(this);
         validator = new UrlValidator();
     }
-
-    
 
     @Override
     public String getWindowTitle() {
@@ -148,7 +155,6 @@ public class AddDownloadController extends TitleController implements Initializa
             return;
         }
 
-        //make download request and redirect to running download list page..
         makeDownloadRequest(url,filename,saveLocation);
 
     }
@@ -205,12 +211,11 @@ public class AddDownloadController extends TitleController implements Initializa
 
     private void makeDownloadRequest(String url,String filename,String storageLocation) {
         //make download request and redirect to running download list page..
-        
-        int id = 0;
-        long size = 2048;
-        DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size);
-        notifyObservers("ADD_DOWNLOAD", null, info);
-        showDialog();
+        if(downloadRequest == null){
+            System.out.println(getClass().getSimpleName()+" makeDownloadRequest: null downloadRequest");
+            return;
+        }
+        downloadRequest.startDownload(url, filename, storageLocation);
     }
 
     private void onClickFileChooser(ActionEvent event) {
@@ -231,38 +236,80 @@ public class AddDownloadController extends TitleController implements Initializa
         
         unSetErrors();
         
-        String data = urlTextField.getText();
+        String urlData = urlTextField.getText();
 
-        if(!validator.isValid(data)){
+        if(!validator.isValid(urlData)){
             setUrlError(Config.URL_ERROR_MSG);
             return;
         }
         progressIndicator.setVisible(true);
 
         // send request to Download Api for file info
-        testDataFetching();
+        if(downloadRequest == null){
+            System.out.println(getClass().getSimpleName()+" onClickInfoDownloadBtn: Download Request object is null");
+            return;
+        }
+        downloadRequest.info(urlData);
         // if you got download info then make isInfoAvailable = true
     }
 
-    private void testDataFetching(){ // test function , remove when test is done.
+    
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask(){
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case ResponseCodes.ON_INFO:
+                onInfo(evt.getNewValue());
+                break;
+            case ResponseCodes.ON_START_DOWNLOAD:
+                onStartDownload(evt.getNewValue());
+                break;
+            default:
+                break;
+        }
+        
+    }
 
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    progressIndicator.setVisible(false);
-                    fileNameTextField.setText("Pal by arijit singh.mp3");
-                    sizeLabel.setText("Size 2 KB");
-                    isInfoAvailable = true;
-                    
-                });
-                
-            }
-            
-        }, 2000);
+    private void onStartDownload(Object newValue) {
+        try {
+            if(!(newValue instanceof JSONObject))
+                throw new IllegalArgumentException("newValue is not JSONObject");
+            JSONObject data = (JSONObject) newValue;
+            int id = (int)data.get(DataCodes.DOWNLOAD_ID);
+            String filename = (String)data.get(DataCodes.FILE_NAME);
+            long size = (long)data.get(DataCodes.FILE_SIZE);
+            String url = (String)data.get(DataCodes.URL);
+            String storageLocation = (String)data.get(DataCodes.SAVED_LOCATION);
+            DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size);
+            notifyObservers(Config.ADD_DOWNLOAD_NOTIFICATION, null, info);
+            showDialog();
+        }catch(IllegalArgumentException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch (Exception e) {
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }
+    }
 
+    private void onInfo(Object newValue) {
+        try {
+            if(!(newValue instanceof JSONObject))
+                throw new IllegalArgumentException("newValue is not JSONObject");
+            JSONObject data = (JSONObject) newValue;
+            String fileName = (String)data.get(DataCodes.FILE_NAME);
+            long size = (long)data.get(DataCodes.FILE_SIZE);
+            progressIndicator.setVisible(false);
+            fileNameTextField.setText(fileName);
+            sizeLabel.setText("Size "+Helper.calculateSizeInText(size));
+            isInfoAvailable = true;
+        } catch(IllegalArgumentException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch (Exception e) {
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }
         
     }
     

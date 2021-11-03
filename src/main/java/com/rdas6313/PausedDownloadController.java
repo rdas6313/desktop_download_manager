@@ -5,6 +5,12 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 import com.rdas6313.DataBase.DbHandler;
+
+import org.json.simple.JSONObject;
+
+import com.rdas6313.ApiConnection.DataCodes;
+import com.rdas6313.ApiConnection.Request;
+import com.rdas6313.ApiConnection.ResponseCodes;
 import com.rdas6313.DataBase.Config;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,10 +34,15 @@ public class PausedDownloadController extends TitleController implements BtnEven
     private ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
     
     private DbHandler dbHandler;
+    private Request downloRequest;
     
-    public PausedDownloadController(DbHandler dbHandler) {
+    
+
+    public PausedDownloadController(DbHandler dbHandler, Request downloRequest) {
         this.dbHandler = dbHandler;
+        this.downloRequest = downloRequest;
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,23 +83,21 @@ public class PausedDownloadController extends TitleController implements BtnEven
             DownloadInfo data = (DownloadInfo) downloadInfoObservableList.remove(index);
             dbHandler.delete(data.getId());
         } catch (Exception e) {
-            System.err.println(getClass().getName()+" onButtonClick :"+e.getMessage());
+            System.err.println(getClass().getName()+" onDelete :"+e.getMessage());
         }
     }
 
     private void onResume(int index) {
-        try {
+        
+         try {
             DownloadInfo data = (DownloadInfo) downloadInfoObservableList.remove(index);
             dbHandler.delete(data.getId());
-            makeDownloadRequest(data);
-            notifyObservers(com.rdas6313.Config.ADD_DOWNLOAD_NOTIFICATION, null, data);
+            downloRequest.startDownload(data.getUrl(), data.getFilename(), data.getStorageLocation());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getName()+" onResume Method: "+e.getMessage());
         } catch (Exception e) {
-            System.err.println(getClass().getName()+" onButtonClick :"+e.getMessage());
+            System.err.println(getClass().getName()+" onResume Method:"+e.getMessage());
         }
-    }
-
-    private void makeDownloadRequest(DownloadInfo data) {
-        //Todo: make download request here
     }
 
     @Override
@@ -110,9 +119,31 @@ public class PausedDownloadController extends TitleController implements BtnEven
             case Config.DELETION_ERROR_NOTIFICATION:
                 System.out.println("Unable to delete"); //Todo: show dialog here.
                 break;
+            case ResponseCodes.ON_START_DOWNLOAD:
+                onStartDownload(evt.getNewValue());
+                break;
         }
         
     }
+
+    private void onStartDownload(Object newValue) {
+        try{
+            JSONObject data = (JSONObject) newValue;
+            int id = (int)data.get(DataCodes.DOWNLOAD_ID);
+            String filename = (String)data.get(DataCodes.FILE_NAME);
+            long size = (long)data.get(DataCodes.FILE_SIZE);
+            String url = (String)data.get(DataCodes.URL);
+            long downloadedSize = (long)data.get(DataCodes.DOWNLOADED_SIZE);
+            String storageLocation = (String)data.get(DataCodes.SAVED_LOCATION);
+            DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size,downloadedSize);
+            notifyObservers(com.rdas6313.Config.ADD_DOWNLOAD_NOTIFICATION, null, info);
+        }catch(NullPointerException e){
+            System.err.println(getClass().getName()+" onStartDownload :"+e.getMessage());
+        }catch(Exception e){
+            System.err.println(getClass().getName()+" onStartDownload :"+e.getMessage());
+        }
+    }
+
 
     private void loadDownloadList(){
         try {

@@ -1,5 +1,6 @@
 package com.rdas6313;
 
+import com.rdas6313.ApiConnection.TestDesktopDownloadConnector;
 import com.rdas6313.DataBase.CompletedListHandler;
 import com.rdas6313.DataBase.DbConnector;
 import com.rdas6313.DataBase.DbHandler;
@@ -21,10 +22,12 @@ public class ControllManager extends Observable{
         new CompletedListHandler(dbConnector)
     };
 
+    private TestDesktopDownloadConnector downloadConnector = new TestDesktopDownloadConnector(); 
+
     private TitleController tControllers[] = {
-        new AddDownloadController(),
-        new RunningDownloadController(dbHandlers),
-        new PausedDownloadController(dbHandlers[0]),
+        new AddDownloadController(downloadConnector),
+        new RunningDownloadController(dbHandlers,downloadConnector),
+        new PausedDownloadController(dbHandlers[0],downloadConnector),
         new CompletedDownloadController(dbHandlers[1])
     };
 
@@ -52,7 +55,8 @@ public class ControllManager extends Observable{
         });
 
         ((CompletedListHandler)dbHandlers[1]).attach((CompletedDownloadController)tControllers[3]);
-    
+        
+       
     }
 
     private void onAddDownload(Object newValue) {
@@ -65,12 +69,18 @@ public class ControllManager extends Observable{
         
         switch(btnId){
             case Config.ADD_DOWNLOAD_BUTTON_ID:
+                dettachAllApiConnector();
+                downloadConnector.attach((AddDownloadController) tControllers[0]);
                 value = 0;        
                 break;
             case Config.RUNNING_DOWNLOAD_BUTTON_ID:
+                dettachAllApiConnector();
+                downloadConnector.attach((RunningDownloadController) tControllers[1]);
                 value = 1;
                 break;
             case Config.PAUSED_DOWNLOAD_BUTTON_ID:
+                dettachAllApiConnector();
+                downloadConnector.attach((PausedDownloadController) tControllers[2]);
                 value = 2;
                 break;
             case Config.COMPLETED_DOWNLOAD_BUTTON_ID:
@@ -88,6 +98,16 @@ public class ControllManager extends Observable{
         Parent root = mController.getRootView();
         mController.setWindowTitle(Config.WELCOME_MSG);
         return root;
+    }
+
+    private void dettachAllApiConnector(){
+        if(downloadConnector == null){
+            System.out.println(getClass().getSimpleName()+" dettachAllApiConnector: download connector null");
+            return;
+        }
+        downloadConnector.detach((RunningDownloadController) tControllers[1]);  
+        downloadConnector.detach((AddDownloadController) tControllers[0]);
+        downloadConnector.detach((PausedDownloadController) tControllers[2]);
     }
   
     

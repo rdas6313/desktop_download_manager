@@ -80,8 +80,6 @@ public class CompletedDownloadController extends TitleController implements Init
         
     }
 
-    
-
     private void onDelete(int index) {
         try {
             DownloadInfo data = (DownloadInfo) downloadInfoObservableList.remove(index);
@@ -105,7 +103,7 @@ public class CompletedDownloadController extends TitleController implements Init
             }).start();
         }else{
             //Todo: use dialog to notify that open folder not possible for this os.
-            System.out.println(getClass().getName()+" openFolder: Can't open folder for this os");
+            System.err.println(getClass().getName()+" openFolder: Can't open folder for this os");
         }
     }
 

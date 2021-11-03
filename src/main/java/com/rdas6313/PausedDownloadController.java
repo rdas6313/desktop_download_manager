@@ -31,7 +31,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
     @FXML
     private ListView<DownloadInfo> listView;
     
-    private ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
+    private ObservableList<DownloadInfo> downloadInfoObservableList;
     
     private DbHandler dbHandler;
     private Request downloRequest;
@@ -46,7 +46,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       
+        downloadInfoObservableList = FXCollections.observableArrayList();
         listView.setItems(downloadInfoObservableList);
         listView.setOrientation(Orientation.VERTICAL);
         listView.setCellFactory(new Callback<ListView<DownloadInfo>,ListCell<DownloadInfo>>(){
@@ -114,7 +114,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
             case Config.INSERTION_SUCCESS_NOTIFICATION:
-                downloadInfoObservableList.add((DownloadInfo)evt.getNewValue());
+                onInsertion((DownloadInfo)evt.getNewValue());
                 break;
             case Config.DELETION_ERROR_NOTIFICATION:
                 System.out.println("Unable to delete"); //Todo: show dialog here.
@@ -125,6 +125,17 @@ public class PausedDownloadController extends TitleController implements BtnEven
         }
         
     }
+
+    private void onInsertion(DownloadInfo newValue) {
+        try {
+            if(downloadInfoObservableList == null)
+                return;
+            downloadInfoObservableList.add(newValue);
+        } catch (Exception e) {
+            System.err.println(getClass().getSimpleName()+" onInsertion: "+e.getMessage());
+        }
+    }
+
 
     private void onStartDownload(Object newValue) {
         try{

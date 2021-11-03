@@ -31,7 +31,7 @@ public class CompletedDownloadController extends TitleController implements Init
 
     private DbHandler dbHandler;
 
-    public ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
+    public ObservableList<DownloadInfo> downloadInfoObservableList;
     
     public CompletedDownloadController(DbHandler dbHandler) {
         this.dbHandler = dbHandler;
@@ -40,6 +40,7 @@ public class CompletedDownloadController extends TitleController implements Init
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        downloadInfoObservableList = FXCollections.observableArrayList();
         listView.setItems(downloadInfoObservableList);
         listView.setOrientation(Orientation.VERTICAL);
         listView.setCellFactory(new Callback<ListView<DownloadInfo>,ListCell<DownloadInfo>>(){
@@ -112,19 +113,20 @@ public class CompletedDownloadController extends TitleController implements Init
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
             case Config.INSERTION_SUCCESS_NOTIFICATION:
-                onGettingNewData(evt.getNewValue());
+                onInsertion((DownloadInfo)evt.getNewValue());
                 break;
         }
         
     }
 
 
-    private void onGettingNewData(Object newValue) {
+    private void onInsertion(DownloadInfo data) {
         try {
-            DownloadInfo data = (DownloadInfo) newValue;
+            if(downloadInfoObservableList == null)
+                return;
             downloadInfoObservableList.add(data);
         } catch (Exception e) {
-            System.err.println(getClass().getName()+" onGettingNewData :"+e.getMessage());
+            System.err.println(getClass().getName()+" onInsertion :"+e.getMessage());
         }
     }
 

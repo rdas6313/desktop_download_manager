@@ -63,12 +63,16 @@ public class TestDesktopDownloadConnector extends Observable implements Request{
             if(data.downloadSize >= data.filesize){
                 list.remove(i);
                 onComplete(data.url, data.filename, data.location, data.filesize, data.id);
+                //onError(data.filename, data.filesize, data.url, data.location, data.id, data.downloadSize);
+            
                 return;
             }else if(data.isCanceled){
                 list.remove(i);
+                
                 return;
             }
             data.downloadSize += INCREASE_SIZE;
+            
             onProgress(data.id, data.filename, data.url, data.location, data.downloadSize, data.filesize);
         }
 
@@ -136,7 +140,7 @@ public class TestDesktopDownloadConnector extends Observable implements Request{
         data.isCanceled = true;
         cancelledList.add(data);
         onStopDownload(data.id, data.filename, data.url, data.location, data.downloadSize, data.filesize);
-        
+       
         System.out.println(getClass().getSimpleName()+" stopDownload");
     }
 
@@ -193,8 +197,18 @@ public class TestDesktopDownloadConnector extends Observable implements Request{
         System.out.println(getClass().getSimpleName()+" onComplete");
     }
 
-    private void onError(){
-
+    private void onError(String fileName,long size,String url,String saveLocation,int id,long downloadedSize){
+        HashMap<String,Object> data = new HashMap<String,Object>();
+        data.put(DataCodes.FILE_NAME,fileName);
+        data.put(DataCodes.FILE_SIZE,size);
+        data.put(DataCodes.URL,url);
+        data.put(DataCodes.SAVED_LOCATION,saveLocation);
+        data.put(DataCodes.DOWNLOAD_ID,id);
+        data.put(DataCodes.DOWNLOADED_SIZE,downloadedSize);
+        Platform.runLater(()->{
+            notifyObservers(ResponseCodes.ON_ERROR, null, new JSONObject(data));
+        });
+        System.out.println(getClass().getSimpleName()+" onError");
     }
 
     class TestData{

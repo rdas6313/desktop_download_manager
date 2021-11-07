@@ -4,6 +4,7 @@ import com.rdas6313.ApiConnection.TestDesktopDownloadConnector;
 import com.rdas6313.DataBase.CompletedListHandler;
 import com.rdas6313.DataBase.DbConnector;
 import com.rdas6313.DataBase.DbHandler;
+import com.rdas6313.DataBase.ErrorListHandler;
 import com.rdas6313.DataBase.PausedListHandler;
 import com.rdas6313.DataBase.SqlliteConnector;
 
@@ -19,7 +20,8 @@ public class ControllManager extends Observable{
 
     private DbHandler dbHandlers[] = {
         new PausedListHandler(dbConnector),
-        new CompletedListHandler(dbConnector)
+        new CompletedListHandler(dbConnector),
+        new ErrorListHandler(dbConnector)
     };
 
     private TestDesktopDownloadConnector downloadConnector = new TestDesktopDownloadConnector(); 
@@ -28,7 +30,8 @@ public class ControllManager extends Observable{
         new AddDownloadController(downloadConnector),
         new RunningDownloadController(dbHandlers,downloadConnector),
         new PausedDownloadController(dbHandlers[0],downloadConnector),
-        new CompletedDownloadController(dbHandlers[1])
+        new CompletedDownloadController(dbHandlers[1]),
+        new ErrorDownloadController(dbHandlers[2])
     };
 
     public ControllManager(){
@@ -56,7 +59,7 @@ public class ControllManager extends Observable{
 
         ((CompletedListHandler)dbHandlers[1]).attach((CompletedDownloadController)tControllers[3]);
         downloadConnector.attach((RunningDownloadController) tControllers[1]);
-       
+        ((ErrorListHandler)dbHandlers[2]).attach((ErrorDownloadController)tControllers[4]);
     }
 
     private void onAddDownload(Object newValue) {
@@ -84,6 +87,9 @@ public class ControllManager extends Observable{
                 break;
             case Config.COMPLETED_DOWNLOAD_BUTTON_ID:
                 value = 3;
+                break;
+            case Config.ERROR_DOWNLOAD_BUTTON_ID:
+                value = 4;
                 break;
             default:
                 return;

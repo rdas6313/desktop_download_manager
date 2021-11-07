@@ -146,7 +146,22 @@ public class RunningDownloadController extends TitleController implements Initia
     }
 
     private void onError(Object newValue) {
-        //Todo: onError
+        try {
+            if(!(newValue instanceof JSONObject)){
+                throw new IllegalArgumentException("Illegal argument given in onError");
+            }
+            JSONObject data = (JSONObject) newValue;
+            int download_id = (int)data.get(DataCodes.DOWNLOAD_ID);
+            DownloadInfo info = getDownloadFromList(download_id);
+            downloadInfoObservableList.remove(info);
+            dbHandler[2].insert(info);    
+        }catch(IllegalArgumentException e){
+            System.err.println(getClass().getName()+" onError : "+e.getMessage());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getName()+" onError : "+e.getMessage());
+        } catch (Exception e) {
+            System.err.println(getClass().getName()+" onError : "+e.getMessage());
+        }  
     }
 
     private void onComplete(Object newValue) {

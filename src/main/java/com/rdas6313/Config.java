@@ -8,6 +8,7 @@ public class Config {
     public static final String WELCOME_MSG = "Welcome";
     public static final String PAUSED_DOWNLOAD_TITLE = "Paused Downloads";
     public static final String COMPLETED_DOWNLOAD_WINDOW_TITLE = "Completed Downloads";
+    public static final String ERROR_DOWNLOAD_TITLE = "Error Downloads";
     //Setting Scene window here
     public static final int APP_WINDOW_WIDTH = 700;
     public static final int APP_WINDOW_HEIGHT = 450;
@@ -21,6 +22,8 @@ public class Config {
     public static final String LOAD_PAUSED_LIST_ITEM = "/fxml/pausedListItem.fxml";
     public static final String LOAD_COMPLETED_DOWNLOAD = "/fxml/completedDownload.fxml";
     public static final String LOAD_COMPLETED_LIST_ITEM = "/fxml/completedListItem.fxml";
+    public static final String LOAD_ERROR_DOWNLOAD = "/fxml/errorDownload.fxml";
+    public static final String LOAD_ERROR_LIST_ITEM = "/fxml/errorListItem.fxml";
     
     //setting drawer buttons id
     public static final String ADD_DOWNLOAD_BUTTON_ID = "addDownloadBtn";

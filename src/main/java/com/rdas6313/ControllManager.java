@@ -1,12 +1,18 @@
 package com.rdas6313;
 
+import java.util.prefs.Preferences;
+
 import com.rdas6313.ApiConnection.TestDesktopDownloadConnector;
 import com.rdas6313.DataBase.CompletedListHandler;
+import com.rdas6313.DataBase.DbConfig;
 import com.rdas6313.DataBase.DbConnector;
 import com.rdas6313.DataBase.DbHandler;
 import com.rdas6313.DataBase.ErrorListHandler;
 import com.rdas6313.DataBase.PausedListHandler;
 import com.rdas6313.DataBase.SqlliteConnector;
+import com.rdas6313.Preference.PrefConfig;
+import com.rdas6313.Preference.PreferenceApi;
+import com.rdas6313.Preference.PreferenceHandler;
 
 import javafx.scene.Parent;
 
@@ -16,25 +22,22 @@ public class ControllManager extends Observable{
     
     private MainWindowController mController;
 
-    private DbConnector dbConnector = new SqlliteConnector();
+    private DbConnector dbConnector;
 
-    private DbHandler dbHandlers[] = {
-        new PausedListHandler(dbConnector),
-        new CompletedListHandler(dbConnector),
-        new ErrorListHandler(dbConnector)
-    };
+    private PreferenceHandler preferenceHandler;
 
-    private TestDesktopDownloadConnector downloadConnector = new TestDesktopDownloadConnector(); 
+    private DbHandler dbHandlers[];
 
-    private TitleController tControllers[] = {
-        new AddDownloadController(downloadConnector),
-        new RunningDownloadController(dbHandlers,downloadConnector),
-        new PausedDownloadController(dbHandlers[0],downloadConnector),
-        new CompletedDownloadController(dbHandlers[1]),
-        new ErrorDownloadController(dbHandlers[2])
-    };
+    private TestDesktopDownloadConnector downloadConnector; 
+
+    private TitleController tControllers[];
 
     public ControllManager(){
+
+        createDbPath();
+
+        Init();
+
         drawerController = new DrawerController();
         drawerController.attach((event)->{
             onClickNavDrawerBtn(event.getNewValue());
@@ -60,6 +63,12 @@ public class ControllManager extends Observable{
         ((CompletedListHandler)dbHandlers[1]).attach((CompletedDownloadController)tControllers[3]);
         downloadConnector.attach((RunningDownloadController) tControllers[1]);
         ((ErrorListHandler)dbHandlers[2]).attach((ErrorDownloadController)tControllers[4]);
+    }
+
+    private void createDbPath() {
+        String path = DbConfig.PATH_FOR_DB;
+        if(!Helper.createDir(path))
+            System.err.println(getClass().getSimpleName()+" createDbPath: unable to create Db path.");
     }
 
     private void onAddDownload(Object newValue) {
@@ -113,6 +122,31 @@ public class ControllManager extends Observable{
         
         downloadConnector.detach((AddDownloadController) tControllers[0]);
         downloadConnector.detach((PausedDownloadController) tControllers[2]);
+    }
+
+    private void Init(){
+
+        downloadConnector = new TestDesktopDownloadConnector();
+        dbConnector = new SqlliteConnector();
+
+        dbHandlers = new DbHandler[]{
+            new PausedListHandler(dbConnector),
+            new CompletedListHandler(dbConnector),
+            new ErrorListHandler(dbConnector)
+        };
+
+        tControllers = new TitleController[]{
+            new AddDownloadController(downloadConnector),
+            new RunningDownloadController(dbHandlers,downloadConnector),
+            new PausedDownloadController(dbHandlers[0],downloadConnector),
+            new CompletedDownloadController(dbHandlers[1]),
+            new ErrorDownloadController(dbHandlers[2])
+        };
+
+        preferenceHandler = new PreferenceApi(
+            Preferences.userRoot().node(PrefConfig.PATH)
+        );
+
     }
   
     

@@ -17,7 +17,7 @@ public class SqlliteConnector implements DbConnector{
     
     private final String SQL_CLASS = "org.sqlite.JDBC";
     private final String DB_PREFIX = "jdbc:sqlite:";
-    private final String DATA_BASE_LOCATION = Config.DATABASE_PATH;
+    private final String DATA_BASE_LOCATION = DbConfig.DATABASE_PATH;
     // SqlliteConnector.class.getResource(Config.DATABASE_PATH).toExternalForm();
 
     public SqlliteConnector() {

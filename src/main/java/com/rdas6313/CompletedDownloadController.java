@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.rdas6313.DataBase.Config;
+import com.rdas6313.DataBase.DbConfig;
 import com.rdas6313.DataBase.DbHandler;
 
 import javafx.collections.FXCollections;
@@ -112,7 +112,7 @@ public class CompletedDownloadController extends TitleController implements Init
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
-            case Config.INSERTION_SUCCESS_NOTIFICATION:
+            case DbConfig.INSERTION_SUCCESS_NOTIFICATION:
                 onInsertion((DownloadInfo)evt.getNewValue());
                 break;
         }

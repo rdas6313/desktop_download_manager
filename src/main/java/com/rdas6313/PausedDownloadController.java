@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 import com.rdas6313.ApiConnection.DataCodes;
 import com.rdas6313.ApiConnection.Request;
 import com.rdas6313.ApiConnection.ResponseCodes;
-import com.rdas6313.DataBase.Config;
+import com.rdas6313.DataBase.DbConfig;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -113,10 +113,10 @@ public class PausedDownloadController extends TitleController implements BtnEven
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
-            case Config.INSERTION_SUCCESS_NOTIFICATION:
+            case DbConfig.INSERTION_SUCCESS_NOTIFICATION:
                 onInsertion((DownloadInfo)evt.getNewValue());
                 break;
-            case Config.DELETION_ERROR_NOTIFICATION:
+            case DbConfig.DELETION_ERROR_NOTIFICATION:
                 System.out.println("Unable to delete"); //Todo: show dialog here.
                 break;
             case ResponseCodes.ON_START_DOWNLOAD:

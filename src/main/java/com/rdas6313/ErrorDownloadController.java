@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.rdas6313.DataBase.Config;
+import com.rdas6313.DataBase.DbConfig;
 import com.rdas6313.DataBase.DbHandler;
 
 import javafx.collections.FXCollections;
@@ -68,7 +68,7 @@ public class ErrorDownloadController extends TitleController implements Initiali
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
-            case Config.INSERTION_SUCCESS_NOTIFICATION:
+            case DbConfig.INSERTION_SUCCESS_NOTIFICATION:
                 onInsert((DownloadInfo)evt.getNewValue());
                 break;
         }

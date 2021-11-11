@@ -1,5 +1,7 @@
 package com.rdas6313;
 
+import java.io.File;
+
 public class Helper {
 	
     public static double calculateProgress(long currentSize,long totalSize){
@@ -39,4 +41,11 @@ public class Helper {
 		return data;
 
     }
+
+	public static boolean createDir(String path){
+		File file = new File(path);
+		if(!file.isDirectory())
+			return file.mkdirs();
+		return true;
+	}
 }

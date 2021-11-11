@@ -1,7 +1,8 @@
 package com.rdas6313.DataBase;
 
-public class Config {
-    public final static String DATABASE_PATH = "abc.db";
+public class DbConfig {
+    public final static String PATH_FOR_DB = System.getProperty("user.home")+"/Download_manager/";
+    public final static String DATABASE_PATH = PATH_FOR_DB +"abc.db";
     //Columns
     public final static String KEY_ID_COLUMN = "key_id";
     public final static String FILE_NAME_COLUMN = "file_name";

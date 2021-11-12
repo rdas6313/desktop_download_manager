@@ -12,6 +12,7 @@ public class Config {
     //Setting Scene window here
     public static final int APP_WINDOW_WIDTH = 700;
     public static final int APP_WINDOW_HEIGHT = 450;
+    public static final int INNER_WINDOW_WIDTH = 655;
     //setting fxml path here
     public static final String LOAD_MAIN_WINDOW = "/fxml/MainWindow.fxml";
     public static final String LOAD_NAV_DRAWER = "/fxml/navdrawer.fxml";
@@ -46,6 +47,7 @@ public class Config {
     //Notification messages
     public static final String ADD_DOWNLOAD_NOTIFICATION = "ADD_DOWNLOAD";
     public static final String ITEM_ADDED_RUNNING_DOWNLOAD_NOTIFICATION = "item_add_to_running_download";
+    
    
    
     

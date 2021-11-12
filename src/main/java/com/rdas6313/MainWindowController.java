@@ -7,11 +7,16 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 
 public class MainWindowController extends Controller implements Initializable{
 
@@ -35,7 +40,7 @@ public class MainWindowController extends Controller implements Initializable{
 
     private AnchorPane sideDrawer;  
 
-    
+    private Timeline timeline;
 
     public MainWindowController(Parent parent) {
         sideDrawer = (AnchorPane)parent;
@@ -48,20 +53,44 @@ public class MainWindowController extends Controller implements Initializable{
         sideDrawer.prefWidthProperty().bind(navDrawer.widthProperty());
         sideDrawer.prefHeightProperty().bind(navDrawer.heightProperty());
         transition = new HamburgerBackArrowBasicTransition(hambargerBtn);
-        transition.setRate(-1);        
+        transition.setRate(-1);
+        timeline = new Timeline();       
     }
 
+    
     @FXML
     private void onClickHambarger(){
         transition.setRate(transition.getRate()*-1);
         transition.play();
-        if(navDrawer.isClosed())
+        if(navDrawer.isClosed()){
             navDrawer.open();
-        else
+            timeline.stop();
+            timeline.getKeyFrames().clear();
+            timeline.getKeyFrames().add(getDrawerOpenAnimation(transition.getTotalDuration(),transition.getInterpolator()));
+            timeline.play();
+        }
+        else{
             navDrawer.close();
+            timeline.stop();
+            timeline.getKeyFrames().clear();
+            timeline.getKeyFrames().add(getDrawerCloseAnimation(transition.getTotalDuration(),transition.getInterpolator()));
+            timeline.play();
+        }
+    }
+    
+    
+    private KeyFrame getDrawerCloseAnimation(Duration duration, Interpolator interpolator){
+        KeyFrame keyFrame = new KeyFrame(duration,
+            new KeyValue(paneWindow.prefWidthProperty(),Config.APP_WINDOW_WIDTH,interpolator));
+        return keyFrame;
     }
 
-    
+    private KeyFrame getDrawerOpenAnimation(Duration duration, Interpolator interpolator) {
+        KeyFrame keyFrame = new KeyFrame(duration,
+            new KeyValue(paneWindow.prefWidthProperty(),Config.INNER_WINDOW_WIDTH,interpolator));
+        return keyFrame;
+    }
+
 
     @Override
     protected String getFxmlPath() {

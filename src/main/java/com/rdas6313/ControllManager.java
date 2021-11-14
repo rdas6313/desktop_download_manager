@@ -100,6 +100,9 @@ public class ControllManager extends Observable{
             case Config.ERROR_DOWNLOAD_BUTTON_ID:
                 value = 4;
                 break;
+            case Config.SETTINGS_BUTTON_ID:
+                value = 5;
+                break;
             default:
                 return;
         }
@@ -129,6 +132,10 @@ public class ControllManager extends Observable{
         downloadConnector = new TestDesktopDownloadConnector();
         dbConnector = new SqlliteConnector();
 
+        preferenceHandler = new PreferenceApi(
+            Preferences.userRoot().node(PrefConfig.PATH)
+        );
+
         dbHandlers = new DbHandler[]{
             new PausedListHandler(dbConnector),
             new CompletedListHandler(dbConnector),
@@ -140,12 +147,11 @@ public class ControllManager extends Observable{
             new RunningDownloadController(dbHandlers,downloadConnector),
             new PausedDownloadController(dbHandlers[0],downloadConnector),
             new CompletedDownloadController(dbHandlers[1]),
-            new ErrorDownloadController(dbHandlers[2])
+            new ErrorDownloadController(dbHandlers[2]),
+            new SettingController(preferenceHandler)
         };
 
-        preferenceHandler = new PreferenceApi(
-            Preferences.userRoot().node(PrefConfig.PATH)
-        );
+        
 
     }
   

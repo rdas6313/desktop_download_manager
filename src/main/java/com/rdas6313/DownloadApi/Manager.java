@@ -32,6 +32,8 @@ public class Manager implements DownloadRequest{
         if(data == null)
             return false;
         data.cancel(true);
+        if(response != null)
+            response.onStop(id);
         return true;
     }
 

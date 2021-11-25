@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DownloadHelper {
 
@@ -22,7 +23,7 @@ public class DownloadHelper {
         return conn;
     }
 
-    public static long getFileSize(String name,String path) throws IOException,RuntimeException,NullPointerException{
+    public static long getLocalFileSize(String name,String path) throws IOException,RuntimeException,NullPointerException{
         if(name == null || name.isEmpty() || path == null || path.isEmpty())
             throw new NullPointerException("name or path is empty or null");
         else if(!name.matches("(.+).(.+)"))
@@ -44,7 +45,7 @@ public class DownloadHelper {
             throw new IOException("Path is not a Directory");
     }
 
-    public static void putFilenameInHeader(HashMap<String,String>data,String name){
+    public static void putFilenameInHeader(Map<String,String>data,String name){
         if(data == null){
             throw new NullPointerException("Null object.");
         }
@@ -79,7 +80,7 @@ public class DownloadHelper {
         return null;
     }
 
-    public static HttpURLConnection putHeadersInData(HttpURLConnection conn,HashMap<String,String>data) throws NullPointerException{
+    public static HttpURLConnection putHeadersInData(HttpURLConnection conn,Map<String,String>data) throws NullPointerException{
         if(conn == null || data == null)
             throw new NullPointerException("Unable to put data beacuause of Null objects.");
        
@@ -128,6 +129,12 @@ public class DownloadHelper {
             throw new RuntimeException(DownloadApiConfig.PERCENTAGE_CALCULATION_ERROR);
         long percentage = (bytesRead*100)/remote_filesize;
         return percentage;
+    }
+
+    public static long getRemoteFileSize(HttpURLConnection conn) throws NullPointerException{
+        if(conn == null)
+            throw new NullPointerException("getting null object in connect");
+        return Long.parseLong(conn.getHeaderField("content-length"));
     }
 
 }

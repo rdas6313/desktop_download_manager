@@ -28,14 +28,15 @@ public class WorkerThread extends Thread{
             }
             switch (data.getFetchType()) {
                 case HEADER_FETCH:
-                    task.getHead(data);
+                    task.headerDownload(data);
                     break;
                 case DATA_FETCH:
-                    //data fetch
+                    task.fileDownload(data);
                     break;
                 default:
                     break;
             }
+            runningList.remove(id);
         }
     }
 

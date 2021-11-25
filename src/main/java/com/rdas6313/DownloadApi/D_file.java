@@ -7,7 +7,7 @@ public class D_file {
     private String storage_location;
     private long size;
     private long download_size;
-    private boolean isCancelled;
+    private volatile boolean isCancelled;
     private FetchType fetchType;
 
     public D_file(String name, String url, String storage_location,FetchType fetchType) {

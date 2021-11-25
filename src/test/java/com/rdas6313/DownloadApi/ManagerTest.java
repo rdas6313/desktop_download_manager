@@ -15,14 +15,28 @@ public class ManagerTest implements DownloadResponse{
 
     @Test
     void testDownload() {
-
+        DownloadRequest request = new Manager(3, this);
+        int id1 = request.download("https://unsplash.com/photos/46yjc9dA8MM/download?ixid=MnwxMjA3fDB8MXxhbGx8M3x8fHx8fDJ8fDE2Mzc4MjU0MTY&force=true",
+            "/home/rdas6313/Music",
+            "test1.mp3");
+        int id2 = request.download("http://wapfun.in/files/download/id/37100",
+            "/home/rdas6313/Music",
+            "test2.mp3");
+        try {
+            int sec = 120;
+            Thread.sleep(1000*sec);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+       
     }
 
     @Test
     void testGetInfo() {
         DownloadRequest request = new Manager(3, this);
         int id1 = request.getInfo("https://unsplash.com/photos/46yjc9dA8MM/download?ixid=MnwxMjA3fDB8MXxhbGx8M3x8fHx8fDJ8fDE2Mzc4MjU0MTY&force=true");
-        
+        int id2 = request.getInfo("http://wapfun.in/files/download/id/37100");
         
         try {
             Thread.sleep(10000);
@@ -30,7 +44,7 @@ public class ManagerTest implements DownloadResponse{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-       // int id3 = request.getInfo("http://"); 
+       
     }
 
     @Override
@@ -51,14 +65,14 @@ public class ManagerTest implements DownloadResponse{
 
     @Override
     public void onProgress(int id, long downloadedSize, long fileSize) {
-        // TODO Auto-generated method stub
-        
+        int percentage = (int)((downloadedSize*100)/fileSize);
+        System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
+   
     }
 
     @Override
     public void onStop(int id) {
-        // TODO Auto-generated method stub
-        
+        System.out.println("stopped id: "+id);
     }
 
     

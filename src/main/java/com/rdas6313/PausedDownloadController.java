@@ -92,7 +92,9 @@ public class PausedDownloadController extends TitleController implements BtnEven
          try {
             DownloadInfo data = (DownloadInfo) downloadInfoObservableList.remove(index);
             dbHandler.delete(data.getId());
-            downloRequest.startDownload(data.getUrl(), data.getFilename(), data.getStorageLocation());
+            int id = downloRequest.startDownload(data.getUrl(), data.getFilename(), data.getStorageLocation());
+            DownloadInfo info = new DownloadInfo(data.getUrl(), data.getFilename(), data.getStorageLocation(), id, data.getSize(),data.getCurrentSize());
+            notifyObservers(com.rdas6313.Config.ADD_DOWNLOAD_NOTIFICATION, null, info);
         }catch(NullPointerException e){
             System.err.println(getClass().getName()+" onResume Method: "+e.getMessage());
         } catch (Exception e) {
@@ -120,7 +122,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
                 System.out.println("Unable to delete"); //Todo: show dialog here.
                 break;
             case ResponseCodes.ON_START_DOWNLOAD:
-                onStartDownload(evt.getNewValue());
+                //onStartDownload(evt.getNewValue());
                 break;
         }
         
@@ -148,6 +150,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
             String storageLocation = (String)data.get(DataCodes.SAVED_LOCATION);
             DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size,downloadedSize);
             notifyObservers(com.rdas6313.Config.ADD_DOWNLOAD_NOTIFICATION, null, info);
+            System.out.println(getClass().getSimpleName()+" onStartDownload: calling");
         }catch(NullPointerException e){
             System.err.println(getClass().getName()+" onStartDownload :"+e.getMessage());
         }catch(Exception e){

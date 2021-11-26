@@ -32,6 +32,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.chart.PieChart.Data;
 
 public class AddDownloadController extends TitleController implements Initializable,EventHandler<ActionEvent>,ChangeListener<String>,PropertyChangeListener{
     
@@ -81,6 +82,8 @@ public class AddDownloadController extends TitleController implements Initializa
     private UrlValidator validator;
     
     private Request downloadRequest;
+
+    private DownloadInfo futureDownloadInfo;
     
     public AddDownloadController(Request downloadRequest) {
         this.downloadRequest = downloadRequest;
@@ -215,7 +218,10 @@ public class AddDownloadController extends TitleController implements Initializa
             System.out.println(getClass().getSimpleName()+" makeDownloadRequest: null downloadRequest");
             return;
         }
-        downloadRequest.startDownload(url, filename, storageLocation);
+        int id = downloadRequest.startDownload(url, filename, storageLocation);
+        DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, futureDownloadInfo.getSize());
+        notifyObservers(Config.ADD_DOWNLOAD_NOTIFICATION, null, info);
+        showDialog();
     }
 
     private void onClickFileChooser(ActionEvent event) {
@@ -262,7 +268,7 @@ public class AddDownloadController extends TitleController implements Initializa
                 onInfo(evt.getNewValue());
                 break;
             case ResponseCodes.ON_START_DOWNLOAD:
-                onStartDownload(evt.getNewValue());
+                //onStartDownload(evt.getNewValue());
                 break;
             default:
                 break;
@@ -281,6 +287,7 @@ public class AddDownloadController extends TitleController implements Initializa
             String url = (String)data.get(DataCodes.URL);
             String storageLocation = (String)data.get(DataCodes.SAVED_LOCATION);
             DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size);
+            
             notifyObservers(Config.ADD_DOWNLOAD_NOTIFICATION, null, info);
             showDialog();
         }catch(IllegalArgumentException e){
@@ -299,6 +306,8 @@ public class AddDownloadController extends TitleController implements Initializa
             JSONObject data = (JSONObject) newValue;
             String fileName = (String)data.get(DataCodes.FILE_NAME);
             long size = (long)data.get(DataCodes.FILE_SIZE);
+            String url = (String)data.get(DataCodes.URL);
+            futureDownloadInfo = new DownloadInfo(url, fileName, null, -1, size);
             progressIndicator.setVisible(false);
             fileNameTextField.setText(fileName);
             sizeLabel.setText("Size "+Helper.calculateSizeInText(size));

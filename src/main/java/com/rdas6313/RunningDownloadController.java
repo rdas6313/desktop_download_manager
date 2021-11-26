@@ -3,6 +3,8 @@ package com.rdas6313;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.rdas6313.ApiConnection.DataCodes;
@@ -34,6 +36,8 @@ public class RunningDownloadController extends TitleController implements Initia
     
     private ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
     
+    private List<DownloadInfo> pausedDataList = new ArrayList<DownloadInfo>();
+
     private DbHandler[] dbHandler;
     
     private Request downloadRequest;
@@ -94,7 +98,7 @@ public class RunningDownloadController extends TitleController implements Initia
             DownloadInfo info = downloadInfoObservableList.get(index);
             downloadRequest.stopDownload(info.getId());
             downloadInfoObservableList.remove(info);
-            dbHandler[0].insert(info);
+            pausedDataList.add(info);
         }catch(NullPointerException e){
             System.err.println(getClass().getSimpleName()+" onPause: "+e.getMessage());
         } catch (Exception e) {
@@ -106,6 +110,7 @@ public class RunningDownloadController extends TitleController implements Initia
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
             case Config.ITEM_ADDED_RUNNING_DOWNLOAD_NOTIFICATION:
+                System.out.println(getClass().getSimpleName()+" ITEM ADDED: ");
                 onItemAdded(evt.getNewValue());
                 break;
             case ResponseCodes.ON_COMPLETE:
@@ -117,10 +122,57 @@ public class RunningDownloadController extends TitleController implements Initia
             case ResponseCodes.ON_PROGRESS:
                 onProgress(evt.getNewValue());
                 break;
+            case ResponseCodes.ON_START_DOWNLOAD:
+               // onStartDownload(evt.getNewValue());
+                break;
+            case ResponseCodes.ON_STOP_DOWNLOAD:
+                onStopDownload(evt.getNewValue());
+                break;
             default:
                 break;
         }
         
+    }
+
+    private void onStopDownload(Object newValue) {
+        try {
+            if(!(newValue instanceof JSONObject))
+                throw new IllegalArgumentException("newValue is not JSONObject");
+            JSONObject data = (JSONObject) newValue;
+            int id = (int)data.get(DataCodes.DOWNLOAD_ID);
+            long downloadedSize = (long)data.get(DataCodes.DOWNLOADED_SIZE);
+            DownloadInfo info = getDownloadFromList(id,pausedDataList);
+            info.setCurrentSize(downloadedSize);
+            pausedDataList.remove(info);
+            dbHandler[0].insert(info);
+        }catch(IllegalArgumentException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch (Exception e) {
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }
+    }
+
+    private void onStartDownload(Object newValue) {
+        try {
+            if(!(newValue instanceof JSONObject))
+                throw new IllegalArgumentException("newValue is not JSONObject");
+            JSONObject data = (JSONObject) newValue;
+            int id = (int)data.get(DataCodes.DOWNLOAD_ID);
+            String filename = (String)data.get(DataCodes.FILE_NAME);
+            long size = (long)data.get(DataCodes.FILE_SIZE);
+            String url = (String)data.get(DataCodes.URL);
+            String storageLocation = (String)data.get(DataCodes.SAVED_LOCATION);
+            DownloadInfo info = new DownloadInfo(url, filename, storageLocation, id, size);
+            downloadInfoObservableList.add(info);
+        }catch(IllegalArgumentException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch (Exception e) {
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }
     }
 
     private void onProgress(Object newValue) {
@@ -132,7 +184,9 @@ public class RunningDownloadController extends TitleController implements Initia
             JSONObject data = (JSONObject) newValue;
             int download_id = (int)data.get(DataCodes.DOWNLOAD_ID);
             long downloadedSize = (long)data.get(DataCodes.DOWNLOADED_SIZE);
-            DownloadInfo info = getDownloadFromList(download_id);
+            DownloadInfo info = getDownloadFromList(download_id,downloadInfoObservableList);
+            if(info == null)
+                info = getDownloadFromList(download_id, pausedDataList);
             info.setCurrentSize(downloadedSize);
             
         }catch(IllegalArgumentException e){
@@ -152,7 +206,7 @@ public class RunningDownloadController extends TitleController implements Initia
             }
             JSONObject data = (JSONObject) newValue;
             int download_id = (int)data.get(DataCodes.DOWNLOAD_ID);
-            DownloadInfo info = getDownloadFromList(download_id);
+            DownloadInfo info = getDownloadFromList(download_id,downloadInfoObservableList);
             downloadInfoObservableList.remove(info);
             dbHandler[2].insert(info);    
         }catch(IllegalArgumentException e){
@@ -172,26 +226,30 @@ public class RunningDownloadController extends TitleController implements Initia
             }
             JSONObject data = (JSONObject) newValue;
             int download_id = (int)data.get(DataCodes.DOWNLOAD_ID);
-            DownloadInfo info = getDownloadFromList(download_id);
+            DownloadInfo info = getDownloadFromList(download_id,downloadInfoObservableList);
             downloadInfoObservableList.remove(info);
             dbHandler[1].insert(info);
             
         }catch(IllegalArgumentException e){
             System.err.println(getClass().getName()+" onComplete : "+e.getMessage());
+            e.printStackTrace();
         }catch(NullPointerException e){
             System.err.println(getClass().getName()+" onComplete : "+e.getMessage());
+            e.printStackTrace();
         } catch (Exception e) {
             System.err.println(getClass().getName()+" onComplete : "+e.getMessage());
+            e.printStackTrace();
         }  
     }
 
-    private DownloadInfo getDownloadFromList(int download_id) throws Exception{
-        for(DownloadInfo info: downloadInfoObservableList){
+    private DownloadInfo getDownloadFromList(int download_id,List<DownloadInfo> list) throws Exception{
+        for(DownloadInfo info: list){
             if(info.getId() == download_id){
                 return info;
             }
         }
-        throw new Exception("DownloadInfo object not found with this download key "+download_id);
+        return null;
+        //throw new Exception("DownloadInfo object not found with this download key "+download_id);
     }
 
     private void onItemAdded(Object newValue) {

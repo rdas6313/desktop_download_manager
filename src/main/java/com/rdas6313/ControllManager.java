@@ -2,6 +2,7 @@ package com.rdas6313;
 
 import java.util.prefs.Preferences;
 
+import com.rdas6313.ApiConnection.DesktopDownloadConnector;
 import com.rdas6313.ApiConnection.TestDesktopDownloadConnector;
 import com.rdas6313.DataBase.CompletedListHandler;
 import com.rdas6313.DataBase.DbConfig;
@@ -28,7 +29,7 @@ public class ControllManager extends Observable{
 
     private DbHandler dbHandlers[];
 
-    private TestDesktopDownloadConnector downloadConnector; 
+    private DesktopDownloadConnector downloadConnector; 
 
     private TitleController tControllers[];
 
@@ -129,12 +130,12 @@ public class ControllManager extends Observable{
 
     private void Init(){
 
-        downloadConnector = new TestDesktopDownloadConnector();
-        dbConnector = new SqlliteConnector();
-
         preferenceHandler = new PreferenceApi(
             Preferences.userRoot().node(PrefConfig.PATH)
         );
+
+        downloadConnector = new DesktopDownloadConnector(preferenceHandler);
+        dbConnector = new SqlliteConnector();
 
         dbHandlers = new DbHandler[]{
             new PausedListHandler(dbConnector),

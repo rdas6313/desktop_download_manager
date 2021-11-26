@@ -14,7 +14,6 @@ import com.rdas6313.DataBase.DbHandler;
 
 import org.json.simple.JSONObject;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -36,7 +35,6 @@ public class RunningDownloadController extends TitleController implements Initia
     
     private ObservableList<DownloadInfo> downloadInfoObservableList = FXCollections.observableArrayList();;
     
-    private List<DownloadInfo> pausedDataList = new ArrayList<DownloadInfo>();
 
     private DbHandler[] dbHandler;
     
@@ -98,7 +96,7 @@ public class RunningDownloadController extends TitleController implements Initia
             DownloadInfo info = downloadInfoObservableList.get(index);
             downloadRequest.stopDownload(info.getId());
             downloadInfoObservableList.remove(info);
-            pausedDataList.add(info);
+            dbHandler[0].insert(info);
         }catch(NullPointerException e){
             System.err.println(getClass().getSimpleName()+" onPause: "+e.getMessage());
         } catch (Exception e) {
@@ -126,7 +124,7 @@ public class RunningDownloadController extends TitleController implements Initia
                // onStartDownload(evt.getNewValue());
                 break;
             case ResponseCodes.ON_STOP_DOWNLOAD:
-                onStopDownload(evt.getNewValue());
+                //onStopDownload(evt.getNewValue());
                 break;
             default:
                 break;
@@ -134,7 +132,7 @@ public class RunningDownloadController extends TitleController implements Initia
         
     }
 
-    private void onStopDownload(Object newValue) {
+/*     private void onStopDownload(Object newValue) {
         try {
             if(!(newValue instanceof JSONObject))
                 throw new IllegalArgumentException("newValue is not JSONObject");
@@ -152,9 +150,9 @@ public class RunningDownloadController extends TitleController implements Initia
         }catch (Exception e) {
             System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
         }
-    }
+    } */
 
-    private void onStartDownload(Object newValue) {
+    /* private void onStartDownload(Object newValue) {
         try {
             if(!(newValue instanceof JSONObject))
                 throw new IllegalArgumentException("newValue is not JSONObject");
@@ -173,7 +171,7 @@ public class RunningDownloadController extends TitleController implements Initia
         }catch (Exception e) {
             System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
         }
-    }
+    } */
 
     private void onProgress(Object newValue) {
   
@@ -185,8 +183,6 @@ public class RunningDownloadController extends TitleController implements Initia
             int download_id = (int)data.get(DataCodes.DOWNLOAD_ID);
             long downloadedSize = (long)data.get(DataCodes.DOWNLOADED_SIZE);
             DownloadInfo info = getDownloadFromList(download_id,downloadInfoObservableList);
-            if(info == null)
-                info = getDownloadFromList(download_id, pausedDataList);
             info.setCurrentSize(downloadedSize);
             
         }catch(IllegalArgumentException e){
@@ -228,6 +224,8 @@ public class RunningDownloadController extends TitleController implements Initia
             int download_id = (int)data.get(DataCodes.DOWNLOAD_ID);
             DownloadInfo info = getDownloadFromList(download_id,downloadInfoObservableList);
             downloadInfoObservableList.remove(info);
+            if(info == null)
+                System.err.println(getClass().getSimpleName()+" onComplete: getting no object from download list");
             dbHandler[1].insert(info);
             
         }catch(IllegalArgumentException e){

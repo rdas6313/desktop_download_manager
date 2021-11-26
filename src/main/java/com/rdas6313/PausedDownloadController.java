@@ -139,7 +139,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
     }
 
 
-    private void onStartDownload(Object newValue) {
+   /*  private void onStartDownload(Object newValue) {
         try{
             JSONObject data = (JSONObject) newValue;
             int id = (int)data.get(DataCodes.DOWNLOAD_ID);
@@ -156,7 +156,7 @@ public class PausedDownloadController extends TitleController implements BtnEven
         }catch(Exception e){
             System.err.println(getClass().getName()+" onStartDownload :"+e.getMessage());
         }
-    }
+    } */
 
 
     private void loadDownloadList(){

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.rdas6313.DownloadInfo;
 import com.rdas6313.Observable;
+
 import org.json.simple.JSONObject;
 
 public class CompletedListHandler extends Observable implements DbHandler{

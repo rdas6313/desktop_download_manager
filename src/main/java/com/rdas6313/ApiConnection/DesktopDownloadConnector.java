@@ -3,11 +3,11 @@ package com.rdas6313.ApiConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.rdas6313.Observable;
 import com.rdas6313.DownloadApi.DownloadApiConfig;
 import com.rdas6313.DownloadApi.DownloadRequest;
 import com.rdas6313.DownloadApi.DownloadResponse;
 import com.rdas6313.DownloadApi.Manager;
+import com.rdas6313.Observable;
 import com.rdas6313.Preference.PrefConfig;
 import com.rdas6313.Preference.PreferenceHandler;
 

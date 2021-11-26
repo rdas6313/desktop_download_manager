@@ -36,7 +36,7 @@ public class ManagerTest implements DownloadResponse{
     void testGetInfo() {
         DownloadRequest request = new Manager(3, this);
         int id1 = request.getInfo("https://unsplash.com/photos/46yjc9dA8MM/download?ixid=MnwxMjA3fDB8MXxhbGx8M3x8fHx8fDJ8fDE2Mzc4MjU0MTY&force=true");
-        int id2 = request.getInfo("http://wapfun.in/files/download/id/37100");
+      //  int id2 = request.getInfo("http://wapfun.in/files/download/id/37100");
         
         try {
             Thread.sleep(10000);
@@ -63,17 +63,36 @@ public class ManagerTest implements DownloadResponse{
         
     }
 
+    
+
     @Override
-    public void onProgress(int id, long downloadedSize, long fileSize) {
-        int percentage = (int)((downloadedSize*100)/fileSize);
-        System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
-   
+    public void onProgress(int id, String filename, String saveLocation, String url, long downloadedSize,
+            long fileSize) {
+                int percentage = (int)((downloadedSize*100)/fileSize);
+                System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
+           
+        
     }
 
     @Override
-    public void onStop(int id) {
+    public void onStop(int id, String filename, String saveLocation, String url, long downloadedSize, long fileSize) {
         System.out.println("stopped id: "+id);
+        
     }
 
+    @Override
+    public void onComplete(int id, String filename, String saveLocation, String url, long downloadedSize,
+            long fileSize) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onStart(int id, String filename, String saveLocation, String url, long downloadedSize, long fileSize) {
+        // TODO Auto-generated method stub
+        
+    }
+
+   
     
 }

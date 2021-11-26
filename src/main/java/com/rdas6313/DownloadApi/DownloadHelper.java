@@ -50,9 +50,9 @@ public class DownloadHelper {
             throw new NullPointerException("Null object.");
         }
         if(name == null)
-            data.put("file-name","unknown");
+            data.put(DownloadApiConfig.FILE_NAME,"unknown");
         else    
-            data.put("file-name",name);
+            data.put(DownloadApiConfig.FILE_NAME,name);
     }
 
     public static String calculateName(HttpURLConnection conn){
@@ -86,12 +86,12 @@ public class DownloadHelper {
        
         boolean should_download_dialog_appear = (conn.getHeaderField("content-disposition") != null) ? conn.getHeaderField("content-disposition").matches("attachment(.*)") : false;
         boolean isResumeable = (conn.getHeaderField("accept-ranges") != null) ? conn.getHeaderField("accept-ranges").contains("bytes") : false; 
-        data.put("file-size",conn.getHeaderField("content-length"));
-        data.put("resume-support",isResumeable+"");
-        data.put("content-range",conn.getHeaderField("content-range"));
-        data.put("downloadable-file",should_download_dialog_appear+"");
-        data.put("last-modified",conn.getHeaderField("Last-Modified"));
-        data.put("url",conn.getURL().toString());
+        data.put(DownloadApiConfig.FILE_SIZE,conn.getHeaderField("content-length"));
+        data.put(DownloadApiConfig.RESUME_SUPPORT,isResumeable+"");
+        data.put(DownloadApiConfig.CONTENT_RANGE,conn.getHeaderField("content-range"));
+        data.put(DownloadApiConfig.IS_DOWNLOADABLE,should_download_dialog_appear+"");
+        data.put(DownloadApiConfig.LAST_MODIFIED,conn.getHeaderField("Last-Modified"));
+        data.put(DownloadApiConfig.URL,conn.getURL().toString());
         return conn;
     }
 

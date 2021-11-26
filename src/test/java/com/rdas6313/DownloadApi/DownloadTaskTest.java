@@ -40,14 +40,12 @@ public class DownloadTaskTest implements DownloadResponse{
         
     }
 
-    @Override
-    public void onProgress(int id, long downloadedSize, long fileSize) {
-        int percentage = (int)((downloadedSize*100)/fileSize);
-        System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
-    }
+   
+
+  
 
     @Override
-    public void onStop(int id) {
+    public void onStop(int id, String filename, String saveLocation, String url, long downloadedSize, long fileSize) {
         System.out.println("stopped id: "+id);
         
     }
@@ -75,5 +73,30 @@ public class DownloadTaskTest implements DownloadResponse{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onProgress(int id, String filename, String saveLocation, String url, long downloadedSize,
+            long fileSize) {
+                int percentage = (int)((downloadedSize*100)/fileSize);
+                System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
+           
+        
+    }
+
+    @Override
+    public void onComplete(int id, String filename, String saveLocation, String url, long downloadedSize,
+            long fileSize) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onStart(int id, String filename, String saveLocation, String url, long downloadedSize, long fileSize) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    
+    
     
 }

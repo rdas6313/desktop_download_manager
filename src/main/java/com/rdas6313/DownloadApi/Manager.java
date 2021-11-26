@@ -10,11 +10,10 @@ public class Manager implements DownloadRequest{
     private RunningListManager runningList;
     private Queue<Integer> queue;
     private List<WorkerThread> threads;
-    private int totalThreads;
+    private boolean shouldStopService;
     private DownloadResponse response;
 
     public Manager(int no_of_thread,DownloadResponse response) {
-        totalThreads = no_of_thread;
         this.response = response;
         runningList = new RunningListManager();
         queue = new ConcurrentLinkedQueue<Integer>();
@@ -32,19 +31,24 @@ public class Manager implements DownloadRequest{
         if(data == null)
             return false;
         data.cancel(true);
-        if(response != null)
-            response.onStop(id);
+        System.out.println("DownloadApi Stopping Download for id: "+id);
         return true;
     }
 
     @Override
     public int download(String url, String storage, String filename) {
+        if(shouldStopService)
+            return -1;
         D_file data = new D_file(filename, url, storage,FetchType.DATA_FETCH);
-        return makeRequest(data);
+        int id = makeRequest(data);
+       // response.onStart(id, filename, storage, url, 0, 0);
+        return id;
     }
 
     @Override
     public int getInfo(String url) {
+        if(shouldStopService)
+            return -1;
         D_file data = new D_file(url,FetchType.HEADER_FETCH);
         return makeRequest(data);
     }
@@ -60,5 +64,15 @@ public class Manager implements DownloadRequest{
         }
         return id;
     }
+
+    @Override
+    public void stopService() {
+        for(Thread thread : threads){
+            thread.interrupt();
+        }
+        shouldStopService = true;
+    }
+
+    
     
 }

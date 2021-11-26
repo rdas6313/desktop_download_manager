@@ -18,7 +18,7 @@ public class WorkerThread extends Thread{
 
     @Override
     public void run() {
-        while(true){
+        while(!Thread.currentThread().isInterrupted()){
             int id = getIdFromQueue();
             System.out.println(Thread.currentThread().getName()+" working on id: "+id);
             D_file data = runningList.get(id);

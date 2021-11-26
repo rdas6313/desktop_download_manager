@@ -15,4 +15,12 @@ public class DownloadApiConfig {
     public static final int URL_EXCEPTION_CODE = 2000;
     public static final int INPUT_OUTPUT_EXCEPTION_CODE = 3000;
     public static final int RUNTIME_EXCEPTION_CODE = 4000;
+    //
+    public static final String FILE_SIZE = "file-size";
+    public static final String RESUME_SUPPORT = "resume-support";
+    public static final String CONTENT_RANGE = "content-range";
+    public static final String IS_DOWNLOADABLE = "downloadable-file";
+    public static final String LAST_MODIFIED = "last-modified";
+    public static final String URL = "url";
+    public static final String FILE_NAME = "file-name";
 }

@@ -72,7 +72,7 @@ public class DownloadTask {
         String file_name = dataFile.getFileName();
         String req_method = "GET";
         String fileSize_header = "file-size";
-        int BYTE_ARRAY_SIZE = 1024;
+        int BYTE_ARRAY_SIZE = 1024*256;
         long remote_filesize = 0;
         String savePath = dataFile.getStorage();
         String url = dataFile.getUrl();
@@ -85,6 +85,8 @@ public class DownloadTask {
             conn = DownloadHelper.connect(url, req_method);
             remote_filesize = DownloadHelper.getRemoteFileSize(conn);
             conn.disconnect();
+            res.onStart(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), local_file_size, remote_filesize);
+            //sleep(2);
             conn = DownloadHelper.connect(url, req_method);
             conn = DownloadHelper.setHeaderRange(true, local_file_size, remote_filesize, conn);
             conn = DownloadHelper.checkResponseCode(conn);
@@ -94,12 +96,18 @@ public class DownloadTask {
             out = new FileOutputStream(savePath + "/" + file_name, true);
             long percentage = 0;
             long downloaded_datasize = local_file_size;
+            
             while ((bytesRead = in.read(temp)) != -1 && !dataFile.isCancelled()) {
                 out.write(temp, 0, bytesRead);
                 downloaded_datasize = downloaded_datasize + bytesRead;
-                //percentage = DownloadHelper.calculatePercentage(downloaded_datasize, remote_filesize);
-                res.onProgress(dataFile.getId(), downloaded_datasize, remote_filesize);
+                res.onProgress(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), downloaded_datasize, remote_filesize);
+               // sleep(2);
             }
+            if(dataFile.isCancelled())
+                res.onStop(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), downloaded_datasize, remote_filesize);
+            else
+                res.onComplete(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), remote_filesize, remote_filesize);
+            
         } catch (NullPointerException e) {
             //e.printStackTrace();
             res.onError(dataFile.getId(), DownloadApiConfig.NULL_EXCEPTION_CODE, e.getMessage());
@@ -127,5 +135,13 @@ public class DownloadTask {
             conn = null;
         }
 
+    }
+
+    private void sleep(int sec){
+        try {
+            Thread.currentThread().sleep(sec*1000);
+        } catch (InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

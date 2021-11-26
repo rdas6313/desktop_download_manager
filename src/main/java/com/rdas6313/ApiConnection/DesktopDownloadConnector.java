@@ -48,6 +48,7 @@ public class DesktopDownloadConnector extends Observable implements Request,Down
     public void onError(int id, int errorCode, String msg) {
         HashMap<String,Object> data = new HashMap<String,Object>();
         data.put(DataCodes.DOWNLOAD_ID,id);
+        data.put(DataCodes.ERROR_MSG,msg);
         Platform.runLater(()->{
             notifyObservers(ResponseCodes.ON_ERROR, null, new JSONObject(data));
         });
@@ -129,6 +130,11 @@ public class DesktopDownloadConnector extends Observable implements Request,Down
              notifyObservers(ResponseCodes.ON_STOP_DOWNLOAD, null, new JSONObject(data));
          });
         
+    }
+
+    @Override
+    public void stopDownloadService() {
+        request.stopService();    
     }
 
     

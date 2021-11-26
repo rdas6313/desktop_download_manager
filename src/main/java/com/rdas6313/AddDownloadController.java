@@ -270,13 +270,16 @@ public class AddDownloadController extends TitleController implements Initializa
             case ResponseCodes.ON_START_DOWNLOAD:
                 //onStartDownload(evt.getNewValue());
                 break;
+            case ResponseCodes.ON_ERROR:
+                onError(evt.getNewValue());
+                break;
             default:
                 break;
         }
         
     }
 
-    private void onStartDownload(Object newValue) {
+    /* private void onStartDownload(Object newValue) {
         try {
             if(!(newValue instanceof JSONObject))
                 throw new IllegalArgumentException("newValue is not JSONObject");
@@ -297,6 +300,26 @@ public class AddDownloadController extends TitleController implements Initializa
         }catch (Exception e) {
             System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
         }
+    } */
+
+    private void onError(Object object) {
+        try {
+            if(!(object instanceof JSONObject))
+                throw new IllegalArgumentException("newValue is not JSONObject");
+            JSONObject data = (JSONObject) object;
+            String msg = (String)data.get(DataCodes.ERROR_MSG);
+            progressIndicator.setVisible(false);
+            unSetErrors();
+            setUrlError(msg);
+            isInfoAvailable = false;
+        } catch(IllegalArgumentException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch(NullPointerException e){
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }catch (Exception e) {
+            System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());
+        }
+
     }
 
     private void onInfo(Object newValue) {

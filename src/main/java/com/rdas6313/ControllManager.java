@@ -3,7 +3,6 @@ package com.rdas6313;
 import java.util.prefs.Preferences;
 
 import com.rdas6313.ApiConnection.DesktopDownloadConnector;
-import com.rdas6313.ApiConnection.TestDesktopDownloadConnector;
 import com.rdas6313.DataBase.CompletedListHandler;
 import com.rdas6313.DataBase.DbConfig;
 import com.rdas6313.DataBase.DbConnector;

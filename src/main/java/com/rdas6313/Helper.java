@@ -18,9 +18,9 @@ public class Helper {
         long n = s;
 		double ans = n;
 		int c = 0;
-		while(n > 1024 && c < 3){
-			ans = ans / 1024;
-			n = n / 1024;
+		while(n > 1000 && c < 3){
+			ans = ans / 1000;
+			n = n / 1000;
 			c++;
 		}
 		String data;

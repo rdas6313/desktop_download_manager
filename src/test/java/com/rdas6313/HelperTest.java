@@ -9,4 +9,13 @@ public class HelperTest {
         String path = System.getProperty("user.home") + "/download_manager/";
         Assertions.assertTrue(Helper.createDir(path));
     }
+
+    @Test
+    void testCalculateSizeInText() {
+        long b = 23115110;
+        long a = 5068417;
+        long s = 3210916;
+        String size = Helper.calculateSizeInText(b);
+        System.out.println(size);
+    }
 }

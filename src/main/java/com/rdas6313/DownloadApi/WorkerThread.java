@@ -8,17 +8,21 @@ public class WorkerThread extends Thread{
     private Queue<Integer> queue;
     private DownloadResponse response;
     private DownloadTask task;
+    private boolean shouldStopThread;
 
     public WorkerThread(RunningListManager runningList, Queue<Integer> queue, DownloadResponse response) {
         this.runningList = runningList;
         this.queue = queue;
         this.response = response;
         task = new DownloadTask(response);
+        shouldStopThread = false;
     }
 
     @Override
     public void run() {
-        while(!Thread.currentThread().isInterrupted()){
+    
+      
+        while(!shouldStopThread){
             int id = getIdFromQueue();
             System.out.println(Thread.currentThread().getName()+" working on id: "+id);
             D_file data = runningList.get(id);
@@ -36,8 +40,12 @@ public class WorkerThread extends Thread{
                 default:
                     break;
             }
+            
             runningList.remove(id);
         }
+        
+        
+    
     }
 
     private int getIdFromQueue() {
@@ -65,6 +73,10 @@ public class WorkerThread extends Thread{
                 e.printStackTrace();
             }
         }
+    }
+
+    public void stopThread(){
+        shouldStopThread = true;
     }
        
 }

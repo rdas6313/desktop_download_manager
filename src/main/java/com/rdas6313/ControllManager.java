@@ -154,6 +154,10 @@ public class ControllManager extends Observable{
         
 
     }
+
+    public void onAppClose(){
+        downloadConnector.stopDownloadService();
+    }
   
     
 }

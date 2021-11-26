@@ -67,8 +67,8 @@ public class Manager implements DownloadRequest{
 
     @Override
     public void stopService() {
-        for(Thread thread : threads){
-            thread.interrupt();
+        for(WorkerThread thread : threads){
+            thread.stopThread();
         }
         shouldStopService = true;
     }

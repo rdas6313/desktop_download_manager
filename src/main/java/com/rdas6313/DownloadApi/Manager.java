@@ -18,6 +18,8 @@ public class Manager implements DownloadRequest{
         runningList = new RunningListManager();
         queue = new ConcurrentLinkedQueue<Integer>();
         threads = new ArrayList<>();
+        if(no_of_thread <= 0)
+            no_of_thread = 1;
         for(int i=0;i < no_of_thread;i++){
             WorkerThread thread = new WorkerThread(runningList, queue, response);
             thread.start();

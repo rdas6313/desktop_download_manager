@@ -1,6 +1,6 @@
 package com.rdas6313;
 
-import com.rdas6313.DownloadApp.Helper;
+import com.rdas6313.Helper;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

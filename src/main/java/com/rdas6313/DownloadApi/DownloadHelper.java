@@ -1,48 +1,51 @@
 package com.rdas6313.DownloadApi;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DownloadHelper {
 
-    public static HttpURLConnection setHeaderRange(boolean active,long startRange,long endRange,HttpURLConnection conn) throws NullPointerException{
-        if(!active)
-            return conn;
-        else if(conn == null)
-            throw new NullPointerException("Null object in header.");
-        else if(startRange == -1 || endRange == -1 || startRange > endRange)
-            throw new RuntimeException("Start Range and End range problem.");
-        else if(startRange == endRange)
+    public static HttpURLConnection setHeaderRange(long startRange,long endRange,HttpURLConnection conn) throws NullPointerException{
+      
+        if(conn == null)
+            throw new NullPointerException("Connection object can't be Null in Header Range");
+        else if(startRange == endRange && startRange > 0)
             throw new RuntimeException("start Range and End Range are same.it may possible that whole file has already been downloaded");
-        conn.setRequestProperty("range", "bytes="+startRange+"-"+endRange);
+        else if(startRange < endRange)
+            conn.setRequestProperty("range", "bytes="+startRange+"-"+endRange);
+        
         return conn;
+
     }
 
-    public static long getLocalFileSize(String name,String path) throws IOException,RuntimeException,NullPointerException{
-        if(name == null || name.isEmpty() || path == null || path.isEmpty())
-            throw new NullPointerException("name or path is empty or null");
-        else if(!name.matches("(.+).(.+)"))
-            throw new RuntimeException("invalid file name");
+    public static long getLocalFileSize(String file_name,String path) throws IllegalArgumentException, FileNotFoundException{
+        if(file_name == null || file_name.isEmpty() || path == null || path.isEmpty())
+            throw new IllegalArgumentException("name or path is empty or null");
+        else if(!file_name.matches("(.+).(.+)"))
+            throw new IllegalArgumentException("invalid file name");
         File dir = new File(path);
         if(!dir.isDirectory())
-            throw new RuntimeException("path is not a directory");
+            throw new IllegalArgumentException("path is not a directory");
         
-        File file = new File(path+"/"+name);
+        File file = new File(path+"/"+file_name);
         if(file.exists())
             return file.length();
         return 0;
     }
 
-    public static void makeDownloadDir(String path)throws IOException{
-        
+    public static void isDirExist(String path)throws IllegalArgumentException{
+        if(path == null || path.isEmpty())
+            throw new IllegalArgumentException("Path can't be empty");
         File dir = new File(path);
         if(!dir.isDirectory())
-            throw new IOException("Path is not a Directory");
+            throw new IllegalArgumentException("Path is not a Directory");
     }
 
     public static void putFilenameInHeader(Map<String,String>data,String name){
@@ -116,7 +119,7 @@ public class DownloadHelper {
         return httpURLConnection;
     }
 
-    public static HttpURLConnection connect(String address,String req_method) throws MalformedURLException,IOException{
+    public static HttpURLConnection connect(String address,String req_method) throws MalformedURLException,IOException,ProtocolException{
         HttpURLConnection conn = null;
         URL url_obj = new URL(address);  
         conn = (HttpURLConnection)url_obj.openConnection();
@@ -133,8 +136,11 @@ public class DownloadHelper {
 
     public static long getRemoteFileSize(HttpURLConnection conn) throws NullPointerException{
         if(conn == null)
-            throw new NullPointerException("getting null object in connect");
-        return Long.parseLong(conn.getHeaderField("content-length"));
+            throw new NullPointerException("getting Null connection object while calculating remote file size");
+        String value = conn.getHeaderField("content-length");
+        if(value == null)
+            return 0;
+        return Long.parseLong(value);
     }
 
 }

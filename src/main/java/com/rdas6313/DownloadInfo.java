@@ -49,6 +49,10 @@ public class DownloadInfo {
         return currentSize;
     }
 
+    public void setFileSize(long size){
+        this.size = size;
+    }
+
     public void setCurrentSize(long currentSize) {
         this.currentSize = currentSize;
         double currentProgress = Helper.calculateProgress(currentSize, size);

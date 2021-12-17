@@ -15,6 +15,9 @@ public class DownloadApiConfig {
     public static final int URL_EXCEPTION_CODE = 2000;
     public static final int INPUT_OUTPUT_EXCEPTION_CODE = 3000;
     public static final int RUNTIME_EXCEPTION_CODE = 4000;
+    public static final int ARUGUMENT_EXCEPTION_CODE = 5000;
+    public static final int FILE_NOT_FOUND_EXCEPTION_CODE = 6000;
+    public static final int PROTOCOL_EXCEPTION_CODE = 7000;
     //
     public static final String FILE_SIZE = "file-size";
     public static final String RESUME_SUPPORT = "resume-support";
@@ -23,4 +26,7 @@ public class DownloadApiConfig {
     public static final String LAST_MODIFIED = "last-modified";
     public static final String URL = "url";
     public static final String FILE_NAME = "file-name";
+   
+    
+    
 }

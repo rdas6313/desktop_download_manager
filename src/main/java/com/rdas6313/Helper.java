@@ -5,13 +5,21 @@ import java.io.File;
 public class Helper {
 	
     public static double calculateProgress(long currentSize,long totalSize){
+		if(totalSize < currentSize || totalSize == 0)
+			return -1;
         double currentProgress = ((double)currentSize/totalSize);
         System.out.println("Progress "+currentProgress);
         return currentProgress;
     }
 
     public static String formatTextForSizeAndProgress(long currentSize,long totalSize,double currentProgress){
-      return calculateSizeInText(currentSize)+" / "+calculateSizeInText(totalSize)+" ( "+ (int)(currentProgress*100)+"% )";
+		String text = "";
+		//System.out.println("Total size : "+totalSize);
+		if(totalSize == -1 && currentSize >= totalSize)
+			text = calculateSizeInText(currentSize)+" / Unknown (Unknown %)";
+		else
+			 text = calculateSizeInText(currentSize)+" / "+calculateSizeInText(totalSize)+" ( "+ (int)(currentProgress*100)+"% )";
+      return text;
     }
 
     public static String calculateSizeInText(long s) {

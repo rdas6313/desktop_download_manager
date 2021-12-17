@@ -226,6 +226,7 @@ public class RunningDownloadController extends TitleController implements Initia
             downloadInfoObservableList.remove(info);
             if(info == null)
                 System.err.println(getClass().getSimpleName()+" onComplete: getting no object from download list");
+            info.setFileSize(info.getCurrentSize());
             dbHandler[1].insert(info);
             
         }catch(IllegalArgumentException e){

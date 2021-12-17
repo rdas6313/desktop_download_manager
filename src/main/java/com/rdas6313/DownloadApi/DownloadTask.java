@@ -1,10 +1,12 @@
 package com.rdas6313.DownloadApi;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,7 +82,7 @@ public class DownloadTask {
         InputStream in = null;
         FileOutputStream out = null;
         try {
-            DownloadHelper.makeDownloadDir(savePath);
+            DownloadHelper.isDirExist(savePath);
             long local_file_size = DownloadHelper.getLocalFileSize(file_name, savePath);
             conn = DownloadHelper.connect(url, req_method);
             remote_filesize = DownloadHelper.getRemoteFileSize(conn);
@@ -88,7 +90,8 @@ public class DownloadTask {
             res.onStart(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), local_file_size, remote_filesize);
             //sleep(2);
             conn = DownloadHelper.connect(url, req_method);
-            conn = DownloadHelper.setHeaderRange(true, local_file_size, remote_filesize, conn);
+            //System.out.println(getClass().getSimpleName()+": local size: "+local_file_size+" , remote size: "+remote_filesize);
+            conn = DownloadHelper.setHeaderRange(local_file_size, remote_filesize, conn);
             conn = DownloadHelper.checkResponseCode(conn);
             in = conn.getInputStream();
             byte temp[] = new byte[BYTE_ARRAY_SIZE];
@@ -108,6 +111,12 @@ public class DownloadTask {
             else
                 res.onComplete(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), remote_filesize, remote_filesize);
             
+        }catch(ProtocolException e){
+            res.onError(dataFile.getId(), DownloadApiConfig.PROTOCOL_EXCEPTION_CODE, e.getMessage());
+        }catch(FileNotFoundException e){
+            res.onError(dataFile.getId(), DownloadApiConfig.FILE_NOT_FOUND_EXCEPTION_CODE, e.getMessage());
+        }catch(IllegalArgumentException e){
+            res.onError(dataFile.getId(), DownloadApiConfig.ARUGUMENT_EXCEPTION_CODE, e.getMessage());
         } catch (NullPointerException e) {
             //e.printStackTrace();
             res.onError(dataFile.getId(), DownloadApiConfig.NULL_EXCEPTION_CODE, e.getMessage());
@@ -119,7 +128,7 @@ public class DownloadTask {
             //e.printStackTrace();
         } catch (RuntimeException e) {
             res.onError(dataFile.getId(), DownloadApiConfig.RUNTIME_EXCEPTION_CODE, e.getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
         }finally {
             try{
                 in.close();

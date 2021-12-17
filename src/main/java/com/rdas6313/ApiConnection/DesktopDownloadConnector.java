@@ -58,9 +58,19 @@ public class DesktopDownloadConnector extends Observable implements Request,Down
     @Override
     public void onHeaderInfo(Map<String, String> headerData) {
         Map<String,Object> data = new HashMap<String,Object>();
-        data.put(DataCodes.FILE_NAME,headerData.get(DownloadApiConfig.FILE_NAME));
-        data.put(DataCodes.FILE_SIZE,Long.parseLong(headerData.get(DownloadApiConfig.FILE_SIZE)));
-        data.put(DataCodes.URL,headerData.get(DownloadApiConfig.URL));
+        String filename = headerData.get(DownloadApiConfig.FILE_NAME);
+        String fileSize = headerData.get(DownloadApiConfig.FILE_SIZE);
+        String url = headerData.get(DownloadApiConfig.URL);
+
+        if(filename == null || filename.isEmpty())
+            filename = DataCodes.UNKNOWN_DATA;
+        if(fileSize == null || fileSize.isEmpty())
+            data.put(DataCodes.FILE_SIZE,(long)-1);
+        else
+            data.put(DataCodes.FILE_SIZE,Long.parseLong(fileSize));
+        
+        data.put(DataCodes.FILE_NAME,filename);
+        data.put(DataCodes.URL,url);
         Platform.runLater(() -> {
             notifyObservers(ResponseCodes.ON_INFO, null, new JSONObject(data));
         });

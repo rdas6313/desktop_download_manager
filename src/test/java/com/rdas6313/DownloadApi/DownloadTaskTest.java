@@ -10,7 +10,7 @@ public class DownloadTaskTest implements DownloadResponse{
     @Test
     void testGetHead() {
         D_file dataFile = new D_file(
-        "http://wapfun.in/files/download/id/37100", FetchType.HEADER_FETCH);
+        "https://github.com/rdas6313/desktop_download_manager/archive/refs/heads/master.zip", FetchType.HEADER_FETCH);
         DownloadTask task = new DownloadTask(this);
         Thread thread = new Thread(()->{
             task.headerDownload(dataFile);
@@ -52,8 +52,8 @@ public class DownloadTaskTest implements DownloadResponse{
 
     @Test
     void testFileDownload() {
-        D_file dataFile = new D_file("testfile", 
-        "http://wapfun.in/files/download/id/37100",
+        D_file dataFile = new D_file("testfile.zip", 
+        "https://github.com/rdas6313/desktop_download_manager/archive/refs/heads/master.zip",
             "/home/rdas6313/Music",
             FetchType.DATA_FETCH
         );
@@ -77,9 +77,13 @@ public class DownloadTaskTest implements DownloadResponse{
     @Override
     public void onProgress(int id, String filename, String saveLocation, String url, long downloadedSize,
             long fileSize) {
-                int percentage = (int)((downloadedSize*100)/fileSize);
-                System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
-           
+                if(downloadedSize <= fileSize && fileSize > 0){
+                    int percentage = (int)((downloadedSize*100)/fileSize);
+                    System.out.println("filesize: "+fileSize+", downloaded size: "+downloadedSize);
+                    System.out.println("id: "+id+" percentage: "+percentage+" Thread name: "+Thread.currentThread().getName());
+                }else{
+                    System.out.println("id: "+id+" Downloaded Size: "+downloadedSize+" Thread name: "+Thread.currentThread().getName());
+                }
         
     }
 

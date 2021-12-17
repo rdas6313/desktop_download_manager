@@ -1,5 +1,7 @@
 package com.rdas6313.ApiConnection;
 
+import org.junit.internal.runners.statements.Fail;
+
 public class DataCodes {
     public final static String FILE_NAME = "file_name";
     public final static String URL = "url";
@@ -9,4 +11,6 @@ public class DataCodes {
     public final static String ERROR_CODE = "error_code";
     public final static String ERROR_MSG = "error_msg";
     public static final String DOWNLOAD_ID = "download_id";
+
+    public static final String UNKNOWN_DATA = "unknown"; 
 }

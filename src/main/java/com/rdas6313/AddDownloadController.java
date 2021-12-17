@@ -333,7 +333,10 @@ public class AddDownloadController extends TitleController implements Initializa
             futureDownloadInfo = new DownloadInfo(url, fileName, null, -1, size);
             progressIndicator.setVisible(false);
             fileNameTextField.setText(fileName);
-            sizeLabel.setText("Size "+Helper.calculateSizeInText(size));
+            if(size == -1)
+                sizeLabel.setText("Size Unknown");
+            else
+                sizeLabel.setText("Size "+Helper.calculateSizeInText(size));
             isInfoAvailable = true;
         } catch(IllegalArgumentException e){
             System.err.println(getClass().getSimpleName()+" onInfo: "+e.getMessage());

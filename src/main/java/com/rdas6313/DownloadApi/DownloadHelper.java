@@ -64,7 +64,7 @@ public class DownloadHelper {
         if(conn.getHeaderField("content-disposition") != null && conn.getHeaderField("content-disposition").matches("attachment(.*)")){
             String content_disposition = conn.getHeaderField("content-disposition");
             String parts[] = content_disposition.split(";");
-            if(parts.length == 2){
+            if(parts.length >= 2){
                 parts = parts[1].split("=");
                 if(parts.length == 2)
                     return parts[1].replaceAll("\"", "");

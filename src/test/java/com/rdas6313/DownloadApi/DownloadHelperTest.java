@@ -20,7 +20,7 @@ public class DownloadHelperTest {
         },"Dir Exist"); 
 
         Assertions.assertThrows(IllegalArgumentException.class, ()-> {
-            DownloadHelper.isDirExist("/home/rdas6313/Music/testFolder");
+            DownloadHelper.isDirExist("/home/rdas6313/Music/testFolder1");
         },"Dir Exist");
     }
 

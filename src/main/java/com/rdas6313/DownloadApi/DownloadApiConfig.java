@@ -27,6 +27,7 @@ public class DownloadApiConfig {
     public static final String URL = "url";
     public static final String FILE_NAME = "file-name";
    
-    
-    
+    public static final String USER_AGENT_REQUEST_HEADER = "User-Agent";
+    public static final String USER_AGENT_REQUEST_HEADER_VALUE = "Download_Manager/1.0";
+    public static final String REMOTE_SERVER_PORT = "80";
 }

@@ -123,7 +123,13 @@ public class DownloadHelper {
         HttpURLConnection conn = null;
         URL url_obj = new URL(address);  
         conn = (HttpURLConnection)url_obj.openConnection();
+        
+        conn.setRequestProperty(url_obj.getHost().toString(), DownloadApiConfig.REMOTE_SERVER_PORT);
+        conn.setRequestProperty(DownloadApiConfig.USER_AGENT_REQUEST_HEADER, DownloadApiConfig.USER_AGENT_REQUEST_HEADER_VALUE);
+        System.out.println("Host:Port = "+url_obj.getHost().toString()+":80");
+
         conn.setRequestMethod(req_method);
+
         return conn;
     }
 

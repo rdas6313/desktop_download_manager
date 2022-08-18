@@ -104,6 +104,31 @@
                             <customizedJre>false</customizedJre>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>bundling-for-windows</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <platform>windows</platform>
+                            <mainClass>com.rdas6313.AppStarter</mainClass>
+                            <bundleJre>true</bundleJre>
+                            
+                            <winConfig>
+                                <generateSetup>true</generateSetup>
+                                <headerType>gui</headerType>
+	                            <wrapJar>true</wrapJar>
+                                <setupMode>installForAllUsers</setupMode>
+                                <setupLanguages>
+		                            <english>compiler:Default.isl</english>
+                                </setupLanguages>
+                                <disableDirPage>false</disableDirPage>
+                                <disableFinishedPage>true</disableFinishedPage>
+	                            <createDesktopIconTask>true</createDesktopIconTask>
+                            </winConfig>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

@@ -74,10 +74,11 @@ public class DownloadHelper {
 
         String uri = conn.getURL().getFile();
         String parts[] = uri.split("/");
+        int name_size = 60;
         if(parts.length >= 2 && parts[parts.length-1].matches("(.+).(.+)")){
             String small_data = parts[parts.length-1].replaceAll("\"", "");
-            if(small_data.length() > 40)
-                return small_data.substring(small_data.length()-10);
+            if(small_data.length() > name_size)
+                return small_data.substring(small_data.length()-name_size);
             return small_data;
         }
 

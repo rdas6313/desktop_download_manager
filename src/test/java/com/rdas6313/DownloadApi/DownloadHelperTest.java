@@ -94,4 +94,21 @@ public class DownloadHelperTest {
         String actualEncodedUrl = DownloadHelper.encodeSpace(url);
         Assertions.assertEquals(actualEncodedUrl, encodedUrl,"Both are not same");
     }
+
+    @Test
+    void calculateName() {
+        String url = "https://pagalworld.com.se/siteuploads/files/sfd14/6934/Har%20Har%20Shambhu%20Ringtone_320(PagalWorld.com.se).mp3";
+        String req_method = "HEAD";
+        try {
+            HttpURLConnection conn = DownloadHelper.connect(url,req_method);
+            int code = conn.getResponseCode();
+            System.out.println("Response code : "+code);
+            if(code != 200)
+                return;
+            String name = DownloadHelper.calculateName(conn);
+            System.out.println("File name : "+name);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 }

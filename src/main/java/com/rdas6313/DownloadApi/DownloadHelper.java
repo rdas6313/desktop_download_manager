@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DownloadHelper {
@@ -105,7 +106,7 @@ public class DownloadHelper {
         int code = -1;
         
         code = httpURLConnection.getResponseCode();
-       // System.out.println("Response code for "+httpURLConnection.getURL().getHost()+" "+httpURLConnection.getResponseCode());
+        System.out.println("Response code for "+httpURLConnection.getURL().getHost()+" "+httpURLConnection.getResponseCode());
         if(code >=300 && code < 400){
             throw new RuntimeException(DownloadApiConfig.REDIRECTION_MSG);
         }else if(code >= 400 && code < 500){
@@ -122,13 +123,27 @@ public class DownloadHelper {
     public static HttpURLConnection connect(String address,String req_method) throws MalformedURLException,IOException,ProtocolException{
         HttpURLConnection conn = null;
         address = encodeSpace(address);
+        HttpURLConnection.setFollowRedirects(false);
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         URL url_obj = new URL(address);  
         conn = (HttpURLConnection)url_obj.openConnection();
-        conn.setRequestProperty(url_obj.getHost().toString(), DownloadApiConfig.REMOTE_SERVER_PORT);
+        String host = url_obj.getHost().toString()+":"+DownloadApiConfig.REMOTE_SERVER_PORT;
+        conn.setRequestProperty("Host", host);
         conn.setRequestProperty(DownloadApiConfig.USER_AGENT_REQUEST_HEADER, DownloadApiConfig.USER_AGENT_REQUEST_HEADER_VALUE);
-        System.out.println("Host:Port = "+url_obj.getHost().toString()+":80");
         conn.setRequestMethod(req_method);
+        logRequestHeaders(conn);
         return conn;
+    }
+
+    public static void logRequestHeaders(HttpURLConnection conn){
+        System.out.println("......... Request Headers ..............");
+        System.out.println("Connecting to : "+conn.getURL());
+        System.out.println("Request Method : "+conn.getRequestMethod());
+        Map<String, List<String>> data = conn.getRequestProperties();
+        for(String key:data.keySet()){
+            System.out.println(key+" : "+data.get(key));
+        }
+        System.out.println("......................... ..............");
     }
 
 	public static long calculatePercentage(long bytesRead, long remote_filesize) throws RuntimeException {

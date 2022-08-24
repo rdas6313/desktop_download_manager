@@ -9,7 +9,9 @@ public class DownloadTaskTest implements DownloadResponse{
 
     @Test
     void testGetHead() {
-        String url = "https://pagalworld.com.se/siteuploads/files/sfd14/6934/Har Har Shambhu Ringtone_320(PagalWorld.com.se).mp3";
+        String url1 = "https://pagalworld.com.se/siteuploads/files/sfd14/6934/Har Har Shambhu Ringtone_320(PagalWorld.com.se).mp3";
+        String url0 = "https://pagalworld.com.se/files/download/type/192/id/6045";
+        String url = "https://pagalworld.com.se/files/download/type/320/id/6934";
         D_file dataFile = new D_file(
             url, FetchType.HEADER_FETCH);
         DownloadTask task = new DownloadTask(this);
@@ -53,8 +55,11 @@ public class DownloadTaskTest implements DownloadResponse{
 
     @Test
     void testFileDownload() {
-        D_file dataFile = new D_file("testfile.zip", 
-        "https://github.com/rdas6313/desktop_download_manager/archive/refs/heads/master.zip",
+        String url1 = "https://pagalworld.com.se/files/download/type/320/id/6934";
+        String url = "https://pagalworld.com.se/files/download/type/192/id/6045";
+        String url11 = "http://www.abc.nkang";
+        D_file dataFile = new D_file("testfile2.mp3",
+            url,
             "/home/rdas6313/Music",
             FetchType.DATA_FETCH
         );

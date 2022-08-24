@@ -22,7 +22,7 @@ public class DownloadTask {
         this.res = res;
     }
 
-    public void headerDownload(D_file dataFile) {
+    public boolean headerDownload(D_file dataFile) {
         Map<String,String> headerData = new HashMap<>();
         HttpURLConnection conn = null;
         String url_address = dataFile.getUrl();
@@ -32,42 +32,60 @@ public class DownloadTask {
         String redirect_header = DownloadApiConfig.REDIRECT_HEADER;
         String redirection_regex = DownloadApiConfig.REDIRECTION_REGEX;
         boolean shouldRedirect;
-        
+        int redirection_count = -1;
+        boolean isThereException = false;
         do {
             shouldRedirect = false;
             try {
+                redirection_count++;
                 conn = DownloadHelper.connect(url_address, req_method);
                 conn = DownloadHelper.checkResponseCode(conn);
                 conn = DownloadHelper.putHeadersInData(conn, headerData);
                 String file_name = DownloadHelper.calculateName(conn);
                 DownloadHelper.putFilenameInHeader(headerData, file_name);
-                if(!dataFile.isCancelled())
+                if(!dataFile.isCancelled() && res != null)
                     res.onHeaderInfo(headerData);
             } catch (NullPointerException e) {
+                isThereException = true;
                 System.err.println(e.getMessage());
-                res.onError(d_id,DownloadApiConfig.NULL_EXCEPTION_CODE,e.getMessage());
+                if(res != null)
+                    res.onError(d_id,DownloadApiConfig.NULL_EXCEPTION_CODE,e.getMessage());
             } catch (MalformedURLException e) {
+                isThereException = true;
                 System.err.println(e.getMessage());
-                res.onError(d_id,DownloadApiConfig.URL_EXCEPTION_CODE,e.getMessage());
+                if(res != null)
+                    res.onError(d_id,DownloadApiConfig.URL_EXCEPTION_CODE,e.getMessage());
             } catch (IOException e) {
+                isThereException = true;
                 System.err.println(e.getMessage());
-                res.onError(d_id,DownloadApiConfig.INPUT_OUTPUT_EXCEPTION_CODE,e.getMessage());
+                if(res != null)
+                    res.onError(d_id,DownloadApiConfig.INPUT_OUTPUT_EXCEPTION_CODE,e.getMessage());
             } catch (RuntimeException e) {
                 if (e.getMessage().matches(redirection_regex)) {
                     shouldRedirect = true;
                     url_address = conn.getHeaderField(redirect_header);
                 } else {
+                    isThereException = true;
                     System.err.println(e.getMessage());
-                    res.onError(d_id,DownloadApiConfig.RUNTIME_EXCEPTION_CODE,e.getMessage());
+                    if(res != null)
+                        res.onError(d_id,DownloadApiConfig.RUNTIME_EXCEPTION_CODE,e.getMessage());
                 }
             } finally {
                 if (conn == null)
-                    return;
+                    return isThereException;
                 conn.disconnect();
                 conn = null;
             }
         } while (shouldRedirect);
         dataFile.setUrl(url_address);
+        String file_size = headerData.get(DownloadApiConfig.FILE_SIZE);
+        if(file_size != null && !file_size.isEmpty()) dataFile.setFileSize(Long.parseLong(file_size));
+        else dataFile.setFileSize(0);
+        if(redirection_count > 0) {
+            System.out.println("Total redirection : " + redirection_count);
+            System.out.println("Final redirected url : "+url_address);
+        }
+        return isThereException;
     }
     
     public void fileDownload(D_file dataFile){
@@ -84,9 +102,12 @@ public class DownloadTask {
         try {
             DownloadHelper.isDirExist(savePath);
             long local_file_size = DownloadHelper.getLocalFileSize(file_name, savePath);
-            conn = DownloadHelper.connect(url, req_method);
-            remote_filesize = DownloadHelper.getRemoteFileSize(conn);
-            conn.disconnect();
+
+            boolean isThereException = headerDownload(dataFile);
+            if(isThereException) return;
+            url = dataFile.getUrl();
+            remote_filesize = dataFile.getFileSize();
+
             res.onStart(dataFile.getId(), dataFile.getFileName(), dataFile.getStorage(), dataFile.getUrl(), local_file_size, remote_filesize);
             //sleep(2);
             conn = DownloadHelper.connect(url, req_method);
@@ -113,29 +134,37 @@ public class DownloadTask {
             
         }catch(ProtocolException e){
             res.onError(dataFile.getId(), DownloadApiConfig.PROTOCOL_EXCEPTION_CODE, e.getMessage());
+            System.err.println(e.getMessage());
         }catch(FileNotFoundException e){
+            System.err.println(e.getMessage());
             res.onError(dataFile.getId(), DownloadApiConfig.FILE_NOT_FOUND_EXCEPTION_CODE, e.getMessage());
         }catch(IllegalArgumentException e){
+            System.err.println(e.getMessage());
             res.onError(dataFile.getId(), DownloadApiConfig.ARUGUMENT_EXCEPTION_CODE, e.getMessage());
         } catch (NullPointerException e) {
             //e.printStackTrace();
+            System.err.println(e.getMessage());
             res.onError(dataFile.getId(), DownloadApiConfig.NULL_EXCEPTION_CODE, e.getMessage());
         } catch (MalformedURLException e) {
+            System.err.println(e.getMessage());
             res.onError(dataFile.getId(), DownloadApiConfig.URL_EXCEPTION_CODE, e.getMessage());
             //e.printStackTrace();
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             res.onError(dataFile.getId(), DownloadApiConfig.INPUT_OUTPUT_EXCEPTION_CODE, e.getMessage());
             //e.printStackTrace();
         } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
             res.onError(dataFile.getId(), DownloadApiConfig.RUNTIME_EXCEPTION_CODE, e.getMessage());
-            e.printStackTrace();
         }finally {
             try{
                 in.close();
                 out.close();
             }catch(NullPointerException e){
                 res.onError(dataFile.getId(), DownloadApiConfig.NULL_EXCEPTION_CODE, e.getMessage());
+                System.err.println(e.getMessage());
             }catch(IOException e){
+                System.err.println(e.getMessage());
                 res.onError(dataFile.getId(), DownloadApiConfig.NULL_EXCEPTION_CODE, e.getMessage());
             }
             if (conn == null)

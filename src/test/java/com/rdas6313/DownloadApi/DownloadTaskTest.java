@@ -9,8 +9,9 @@ public class DownloadTaskTest implements DownloadResponse{
 
     @Test
     void testGetHead() {
+        String url = "https://pagalworld.com.se/siteuploads/files/sfd14/6934/Har Har Shambhu Ringtone_320(PagalWorld.com.se).mp3";
         D_file dataFile = new D_file(
-        "https://github.com/rdas6313/desktop_download_manager/archive/refs/heads/master.zip", FetchType.HEADER_FETCH);
+            url, FetchType.HEADER_FETCH);
         DownloadTask task = new DownloadTask(this);
         Thread thread = new Thread(()->{
             task.headerDownload(dataFile);

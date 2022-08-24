@@ -86,4 +86,12 @@ public class DownloadHelperTest {
         Assertions.assertEquals(0, DownloadHelper.getRemoteFileSize(conn));
 
     }
+
+    @Test
+    void testEncodeSpace() {
+        String url = "https://pagalworld.com.se/siteuploads/files/sfd14/6934/Har Har Shambhu Ringtone_320(PagalWorld.com.se).mp3";
+        String encodedUrl = "https://pagalworld.com.se/siteuploads/files/sfd14/6934/Har%20Har%20Shambhu%20Ringtone_320(PagalWorld.com.se).mp3";
+        String actualEncodedUrl = DownloadHelper.encodeSpace(url);
+        Assertions.assertEquals(actualEncodedUrl, encodedUrl,"Both are not same");
+    }
 }

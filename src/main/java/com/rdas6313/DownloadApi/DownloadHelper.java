@@ -121,15 +121,13 @@ public class DownloadHelper {
 
     public static HttpURLConnection connect(String address,String req_method) throws MalformedURLException,IOException,ProtocolException{
         HttpURLConnection conn = null;
+        address = encodeSpace(address);
         URL url_obj = new URL(address);  
         conn = (HttpURLConnection)url_obj.openConnection();
-        
         conn.setRequestProperty(url_obj.getHost().toString(), DownloadApiConfig.REMOTE_SERVER_PORT);
         conn.setRequestProperty(DownloadApiConfig.USER_AGENT_REQUEST_HEADER, DownloadApiConfig.USER_AGENT_REQUEST_HEADER_VALUE);
         System.out.println("Host:Port = "+url_obj.getHost().toString()+":80");
-
         conn.setRequestMethod(req_method);
-
         return conn;
     }
 
@@ -149,5 +147,8 @@ public class DownloadHelper {
         return Long.parseLong(value);
     }
 
+    public static String encodeSpace(String data){
+        return data.replaceAll(" ", "%20");
+    }
 }
 

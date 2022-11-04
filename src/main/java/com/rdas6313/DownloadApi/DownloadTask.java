@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,6 @@ public class DownloadTask {
         Map<String,String> headerData = new HashMap<>();
         HttpURLConnection conn = null;
         String url_address = dataFile.getUrl();
-        
         int d_id = dataFile.getId();
         String req_method = DownloadApiConfig.HEAD_REQUEST;
         String redirect_header = DownloadApiConfig.REDIRECT_HEADER;
@@ -37,6 +37,10 @@ public class DownloadTask {
         do {
             shouldRedirect = false;
             try {
+                if(DownloadHelper.isHttpAndHttps(url_address)){
+                    res.onError(d_id,DownloadApiConfig.URL_EXCEPTION_CODE,"Only http and https protocol is allowed");
+                    return false;
+                }
                 redirection_count++;
                 conn = DownloadHelper.connect(url_address, req_method);
                 conn = DownloadHelper.checkResponseCode(conn);
@@ -52,7 +56,7 @@ public class DownloadTask {
                     res.onError(d_id,DownloadApiConfig.NULL_EXCEPTION_CODE,e.getMessage());
             } catch (MalformedURLException e) {
                 isThereException = true;
-                System.err.println(e.getMessage());
+                System.err.println("Malformed Url - " + e.getMessage());
                 if(res != null)
                     res.onError(d_id,DownloadApiConfig.URL_EXCEPTION_CODE,e.getMessage());
             } catch (IOException e) {
@@ -66,9 +70,9 @@ public class DownloadTask {
                     url_address = conn.getHeaderField(redirect_header);
                 } else {
                     isThereException = true;
-                    System.err.println(e.getMessage());
+                    System.err.println("Runtime Error: " + e.getMessage());
                     if(res != null)
-                        res.onError(d_id,DownloadApiConfig.RUNTIME_EXCEPTION_CODE,e.getMessage());
+                        res.onError(d_id,DownloadApiConfig.RUNTIME_EXCEPTION_CODE,"Oops! Unknown error occoured");
                 }
             } finally {
                 if (conn == null)

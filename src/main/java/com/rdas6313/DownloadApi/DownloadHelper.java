@@ -166,5 +166,10 @@ public class DownloadHelper {
     public static String encodeSpace(String data){
         return data.replaceAll(" ", "%20");
     }
+
+    public static boolean isHttpAndHttps(String url) throws MalformedURLException {
+        URL url_object = new URL(url);
+        return (!url_object.getProtocol().equals("http") && !url_object.getProtocol().equals("https"));
+    }
 }
 

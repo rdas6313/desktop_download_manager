@@ -121,6 +121,11 @@ public class DownloadTask {
             //System.out.println(getClass().getSimpleName()+": local size: "+local_file_size+" , remote size: "+remote_filesize);
             conn = DownloadHelper.setHeaderRange(local_file_size, remote_filesize, conn);
             conn = DownloadHelper.checkResponseCode(conn);
+            Boolean isResumeSupported = DownloadHelper.checkResumeSupport(conn);
+            if(!isResumeSupported){
+                DownloadHelper.deleteLocalFile(file_name,savePath);
+                local_file_size = 0;
+            }
             in = conn.getInputStream();
             byte temp[] = new byte[BYTE_ARRAY_SIZE];
             int bytesRead = 0;

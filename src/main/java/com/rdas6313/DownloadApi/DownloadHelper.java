@@ -180,5 +180,29 @@ public class DownloadHelper {
         URL url_object = new URL(url);
         return (!url_object.getProtocol().equals("http") && !url_object.getProtocol().equals("https"));
     }
+
+    public static Boolean checkResumeSupport(HttpURLConnection conn) {
+        String accept_range_header = "Accept-Ranges";
+        return !(conn.getHeaderField(accept_range_header) == null || conn.getHeaderField(accept_range_header) == "none");
+    }
+
+    public static void deleteLocalFile(String file_name, String path) throws IllegalArgumentException, RuntimeException{
+        if(file_name == null || file_name.isEmpty() || path == null || path.isEmpty())
+            throw new IllegalArgumentException("name or path is empty or null");
+        else if(!file_name.matches("(.+).(.+)"))
+            throw new IllegalArgumentException("invalid file name");
+        File dir = new File(path);
+        if(!dir.isDirectory())
+            throw new IllegalArgumentException("path is not a directory");
+
+        File file = new File(path+"/"+file_name);
+        try{
+            if(file.exists()) {
+                file.delete();
+            }
+        }catch (Exception e){
+            throw new RuntimeException("Unable to delete file: "+e.getMessage());
+        }
+    }
 }
 

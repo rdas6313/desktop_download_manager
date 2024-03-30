@@ -111,4 +111,33 @@ public class DownloadHelperTest {
             System.out.println(e.getMessage());
         }
     }
+    @Test
+    void testResumeSupport(){
+        String url1 = "https://www.pagalworld.com.cm/files/download/type/320/id/68671";
+        String url2 = "https://filesamples.com/samples/video/mp4/sample_1280x720_surfing_with_audio.mp4";
+        String req_method = "HEAD";
+        Boolean resumeSupport = false;
+        try {
+            HttpURLConnection conn = DownloadHelper.connect(url1,req_method);
+            conn.setInstanceFollowRedirects(true);
+            int code = conn.getResponseCode();
+            System.out.println("Response code : "+code);
+            if(code != 200)
+                throw new Exception("Not success code received.");
+            resumeSupport = DownloadHelper.checkResumeSupport(conn);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        Assertions.assertTrue(resumeSupport);
+    }
+    @Test
+    void testfileDeletion(){
+        String path = "/home/rdas6313/Music";
+        String filename = "data";
+        //DownloadHelper.deleteLocalFile(filename,path);
+
+        Assertions.assertThrows(IllegalArgumentException.class, ()->{
+            DownloadHelper.deleteLocalFile(filename,path);
+        },"File Deleted successfully.");
+    }
 }

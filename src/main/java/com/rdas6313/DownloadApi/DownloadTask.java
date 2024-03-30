@@ -14,6 +14,7 @@ import java.util.Map;
 public class DownloadTask {
 
     private DownloadResponse res;
+    private int MAX_NO_REDIRECT = 10;
 
     public DownloadTask(DownloadResponse res) {
         this.res = res;
@@ -34,6 +35,7 @@ public class DownloadTask {
         boolean shouldRedirect;
         int redirection_count = -1;
         boolean isThereException = false;
+        int no_of_redirect = 0;
         do {
             shouldRedirect = false;
             try {
@@ -67,6 +69,7 @@ public class DownloadTask {
             } catch (RuntimeException e) {
                 if (e.getMessage().matches(redirection_regex)) {
                     shouldRedirect = true;
+                    no_of_redirect++;
                     url_address = conn.getHeaderField(redirect_header);
                 } else {
                     isThereException = true;
@@ -80,7 +83,7 @@ public class DownloadTask {
                 conn.disconnect();
                 conn = null;
             }
-        } while (shouldRedirect);
+        } while (shouldRedirect && no_of_redirect < MAX_NO_REDIRECT);
         dataFile.setUrl(url_address);
         String file_size = headerData.get(DownloadApiConfig.FILE_SIZE);
         if(file_size != null && !file_size.isEmpty()) dataFile.setFileSize(Long.parseLong(file_size));

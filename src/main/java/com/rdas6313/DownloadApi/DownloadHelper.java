@@ -128,7 +128,16 @@ public class DownloadHelper {
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         URL url_obj = new URL(address);  
         conn = (HttpURLConnection)url_obj.openConnection();
-        String host = url_obj.getHost().toString()+":"+DownloadApiConfig.REMOTE_SERVER_PORT;
+        String protocol = url_obj.getProtocol();
+        String host = url_obj.getHost().toString()+":";
+        if(protocol == null || protocol.isEmpty())
+            throw new ProtocolException("Protocol not mentioned.");
+        if(protocol.toLowerCase().equals("https"))
+            host += DownloadApiConfig.REMOTE_HTTPS_SERVER_PORT;
+        else if(protocol.toLowerCase().equals("http"))
+            host += DownloadApiConfig.REMOTE_HTTP_SERVER_PORT;
+        else
+            throw new ProtocolException("Unsupported protocol");
         conn.setRequestProperty("Host", host);
         conn.setRequestProperty(DownloadApiConfig.USER_AGENT_REQUEST_HEADER, DownloadApiConfig.USER_AGENT_REQUEST_HEADER_VALUE);
         conn.setRequestMethod(req_method);

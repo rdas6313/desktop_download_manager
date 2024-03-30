@@ -29,5 +29,6 @@ public class DownloadApiConfig {
    
     public static final String USER_AGENT_REQUEST_HEADER = "User-Agent";
     public static final String USER_AGENT_REQUEST_HEADER_VALUE = "Download_Manager/1.0";
-    public static final String REMOTE_SERVER_PORT = "80";
+    public static final String REMOTE_HTTP_SERVER_PORT = "80";
+    public static final String REMOTE_HTTPS_SERVER_PORT = "443";
 }

@@ -34,7 +34,7 @@ public class App extends Application{
             
         });
         stage.show();
-    
+        manager.welcomeView();
     }
 
     public static void main(String[] args) {

@@ -65,6 +65,10 @@ public class ControllManager extends Observable{
         ((ErrorListHandler)dbHandlers[2]).attach((ErrorDownloadController)tControllers[4]);
     }
 
+    public void welcomeView(){
+        onClickNavDrawerBtn(Config.ADD_DOWNLOAD_BUTTON_ID);
+    }
+
     private void createDbPath() {
         String path = DbConfig.PATH_FOR_DB;
         if(!Helper.createDir(path))

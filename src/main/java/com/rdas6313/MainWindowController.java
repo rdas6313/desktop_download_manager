@@ -54,7 +54,8 @@ public class MainWindowController extends Controller implements Initializable{
         sideDrawer.prefHeightProperty().bind(navDrawer.heightProperty());
         transition = new HamburgerBackArrowBasicTransition(hambargerBtn);
         transition.setRate(-1);
-        timeline = new Timeline();       
+        timeline = new Timeline();
+        onClickHambarger();
     }
 
     
